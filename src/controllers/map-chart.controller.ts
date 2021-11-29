@@ -1,4 +1,4 @@
-import {convertAmount, CountryCurrenciesMap} from "../services/conversion.service";
+import {convertAmount, CountryCurrenciesMap, ICurrency} from "../services/conversion.service";
 
 export interface IGeography {
     geometry: any;
@@ -29,25 +29,21 @@ interface IGeoStyle {
 }
 
 export const getGeoStyle = (
-    geo: IGeography, currencies: CountryCurrenciesMap, amount: number, baseCurrency: string
+    geo: IGeography, currencies: ICurrency[], amount: number, baseCurrency: string
 ): IGeoStyle => {
     const baseStyle = {
         fill: "#D6D6DA",
         outline: "none",
     };
 
-    const geoCurrencies = currencies[geo.properties.ISO_A2];
-    if (geoCurrencies === undefined || geoCurrencies.length === 0) {
+    if (currencies === undefined || currencies.length === 0) {
         console.warn(
             `no exchange rates found for ${geo.properties.NAME_LONG}`
         );
     } else {
-        const maxWealthInGeo = Math.max(...geoCurrencies.map(
+        const maxWealthInGeo = Math.max(...currencies.map(
             (currency) => convertAmount(amount, baseCurrency, currency.code)
         ));
-        // const h = maxWealthInGeo >= 1e6 ? 120 : 0
-        // const l = maxWealthInGeo >= 1e6 ? overMillionLightness(maxWealthInGeo) : subMillionLightness(maxWealthInGeo)
-        // baseStyle.fill = `hsl(${h}, 100%, ${l}%)`
         const r = maxWealthInGeo < 1e6 ? subMillionR(maxWealthInGeo) : overMillionR(maxWealthInGeo)
         const g = maxWealthInGeo < 1e6 ? subMillionG(maxWealthInGeo) : overMillionG(maxWealthInGeo)
         const b = maxWealthInGeo < 1e6 ? subMillionB(maxWealthInGeo) : overMillionB(maxWealthInGeo)

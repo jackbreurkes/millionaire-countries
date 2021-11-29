@@ -7,7 +7,6 @@ import {
   Geography,
 } from "react-simple-maps";
 import {
-  convertAmount,
   CountryCurrenciesMap,
 } from "../services/conversion.service";
 import CurrencyDisplay from "./CurrencyDisplay";
@@ -23,12 +22,12 @@ interface PropsFromState {
 
 const MapChart = ({
   setTooltipContent,
-  currencies,
+  countryCurrencies,
   amount,
   baseCurrency,
 }: {
   setTooltipContent: (content: any) => void;
-  currencies: CountryCurrenciesMap;
+  countryCurrencies: CountryCurrenciesMap;
 } & PropsFromState) => {
   return (
     <>
@@ -51,7 +50,8 @@ const MapChart = ({
               });
 
               return geographies.map((geo) => {
-                const geoStyle = getGeoStyle(geo, currencies, amount, baseCurrency)
+                const geoCurrencies = countryCurrencies[geo.properties.ISO_A2];
+                const geoStyle = getGeoStyle(geo, geoCurrencies, amount, baseCurrency)
 
                 return (
                   <Geography
@@ -62,7 +62,7 @@ const MapChart = ({
                       setTooltipContent(
                         <CurrencyDisplay
                           country={NAME}
-                          currencies={currencies[ISO_A2]}
+                          currencies={countryCurrencies[ISO_A2]}
                         />
                       );
                     }}

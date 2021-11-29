@@ -31,11 +31,11 @@ function App() {
         <AmountInput />
         <MapChart
           setTooltipContent={setTooltipContent}
-          currencies={currencies}
+          countryCurrencies={currencies}
         />
         <ReactTooltip>{tooltipContent}</ReactTooltip>
         <Legend />
-        <InfoPane />
+        <InfoPane countryCurrencies={currencies} />
       </Provider>
     </div>
   );

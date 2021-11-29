@@ -7,8 +7,8 @@ const FIXER_API_KEY = "7765dac57cf1c67f6802d3b351a928cc";
 
 interface APICountry {
     name: { common: string };
-    cca2: string; //
-    cca3: string;
+    cca2: string; // two-letter country code
+    cca3: string; // three-letter country code
     currencies: {[code: string]: {name: string, symbol: string} };
 }
 
@@ -19,7 +19,7 @@ export interface ICurrency {
 }
 
 export interface CountryCurrenciesMap {
-    [country: string]: ICurrency[];
+    [countryCodeA2: string]: ICurrency[];
 }
 
 export function convertAmount(
