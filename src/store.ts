@@ -30,16 +30,6 @@ export const setCurrency = (currency: string) => ({
   payload: currency,
 });
 
-// const amountSlice = createSlice({
-//   name: "amount",
-//   initialState: 1,
-//   reducers: {
-//     set: (state, action) => {
-//       state = action.payload;
-//     },
-//   },
-// });
-
 export default createStore(
   combineReducers({ amount: amountReducer, baseCurrency: baseCurrencyReducer })
 );

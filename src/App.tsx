@@ -11,6 +11,7 @@ import {
 } from "./services/conversion.service";
 import store from "./store";
 import AmountInput from "./components/AmountInput";
+import InfoPane from "./components/InfoPane";
 
 function App() {
   const [currencies, setCurrencies] = useState<CountryCurrenciesMap>({});
@@ -34,6 +35,7 @@ function App() {
         />
         <ReactTooltip>{tooltipContent}</ReactTooltip>
         <Legend />
+        <InfoPane />
       </Provider>
     </div>
   );

@@ -1,10 +1,10 @@
-import React from "react";
-import { APICurrency, convertAmount } from "../services/conversion.service";
+import React, {ReactElement} from "react";
+import { ICurrency, convertAmount } from "../services/conversion.service";
 import { connect } from "react-redux";
 
 interface BaseProps {
   country: string;
-  currencies: APICurrency[]; // TODO handle no currencies
+  currencies: ICurrency[]; // TODO handle no currencies
 }
 
 interface PropsFromState {
@@ -23,20 +23,24 @@ const formatAmount = (amount: number, currencyCode: string): string => {
 };
 
 const CurrencyDisplay = (props: BaseProps & PropsFromState) => {
-  const amounts = props.currencies.map((currency) => {
-    const convertedAmount = convertAmount(
-      props.amount,
-      props.baseCurrency,
-      currency.code
-    );
+  let amounts: ReactElement | ReactElement[] = <p>No currencies found</p>
+  if (props.currencies.length > 0) {
+    amounts = props.currencies.map((currency) => {
+      const convertedAmount = convertAmount(
+          props.amount,
+          props.baseCurrency,
+          currency.code
+      );
 
-    return (
-      <p key={currency.code}>
-        {currency.name}: {formatAmount(convertedAmount, currency.code)}
-      </p>
-    );
-  });
+      return (
+          <p key={currency.code}>
+            {currency.name}: {formatAmount(convertedAmount, currency.code)}
+          </p>
+      );
+    });
+  }
 
+  console.log(amounts)
   return (
     <>
       <h3>{props.country}</h3>

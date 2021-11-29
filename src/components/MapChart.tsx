@@ -11,32 +11,10 @@ import {
   CountryCurrenciesMap,
 } from "../services/conversion.service";
 import CurrencyDisplay from "./CurrencyDisplay";
+import { getGeoStyle, IGeography } from "../controllers/map-chart.controller";
 
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
-
-interface IGeography {
-  geometry: any;
-  properties: IGeographyProperties;
-  rsmKey: string;
-}
-
-interface IGeographyProperties {
-  ABBREV: string;
-  CONTINENT: string;
-  FORMAL_EN: string;
-  GDP_MD_EST: number;
-  GDP_YEAR: number;
-  ISO_A2: string;
-  ISO_A3: string;
-  NAME: string;
-  NAME_LONG: string;
-  POP_EST: number;
-  POP_RANK: number;
-  POP_YEAR: number;
-  REGION_UN: string;
-  SUBREGION: string;
-}
 
 interface PropsFromState {
   amount: number;
@@ -72,31 +50,9 @@ const MapChart = ({
                 geo.properties.ISO_A2 = countryCode;
               });
 
-              geographies.forEach((g) => {
-                const geoCurrencies = currencies[g.properties.ISO_A2];
-                if (geoCurrencies === undefined || geoCurrencies.length === 0) {
-                  console.warn(
-                    `no exchange rates found for ${g.properties.NAME_LONG}`
-                  );
-                }
-              });
-
               return geographies.map((geo) => {
-                const baseStyle = {
-                  fill: "#D6D6DA",
-                  outline: "none",
-                };
-                const geoCurrencies = currencies[geo.properties.ISO_A2];
-                const millions =
-                  geoCurrencies &&
-                  geoCurrencies.filter(
-                    (currency) =>
-                      convertAmount(amount, baseCurrency, currency.code) >
-                      1000000
-                  ).length > 0;
-                if (millions) {
-                  baseStyle.fill = "#00FF00";
-                }
+                const geoStyle = getGeoStyle(geo, currencies, amount, baseCurrency)
+
                 return (
                   <Geography
                     key={geo.rsmKey}
@@ -114,7 +70,7 @@ const MapChart = ({
                       setTooltipContent("");
                     }}
                     style={{
-                      default: baseStyle,
+                      default: geoStyle,
                       hover: {
                         fill: "#F53",
                         outline: "none",
