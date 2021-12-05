@@ -40,7 +40,6 @@ const CurrencyDisplay = (props: BaseProps & PropsFromState) => {
     });
   }
 
-  console.log(amounts)
   return (
     <>
       <h3>{props.country}</h3>

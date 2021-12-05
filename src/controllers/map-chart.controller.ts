@@ -1,4 +1,4 @@
-import {convertAmount, CountryCurrenciesMap, ICurrency} from "../services/conversion.service";
+import {convertAmount, ICurrency} from "../services/conversion.service";
 
 export interface IGeography {
     geometry: any;
@@ -28,30 +28,15 @@ interface IGeoStyle {
     outline: string
 }
 
-export const getGeoStyle = (
-    geo: IGeography, currencies: ICurrency[], amount: number, baseCurrency: string
-): IGeoStyle => {
-    const baseStyle = {
-        fill: "#D6D6DA",
-        outline: "none",
-    };
+type RangeTransformer = (original: number) => number;
 
-    if (currencies === undefined || currencies.length === 0) {
-        console.warn(
-            `no exchange rates found for ${geo.properties.NAME_LONG}`
-        );
-    } else {
-        const maxWealthInGeo = Math.max(...currencies.map(
-            (currency) => convertAmount(amount, baseCurrency, currency.code)
-        ));
-        const r = maxWealthInGeo < 1e6 ? subMillionR(maxWealthInGeo) : overMillionR(maxWealthInGeo)
-        const g = maxWealthInGeo < 1e6 ? subMillionG(maxWealthInGeo) : overMillionG(maxWealthInGeo)
-        const b = maxWealthInGeo < 1e6 ? subMillionB(maxWealthInGeo) : overMillionB(maxWealthInGeo)
-        baseStyle.fill = `rgb(${r}, ${g}, ${b})`
-    }
+let subThresholdR: undefined | RangeTransformer;
+let subThresholdG: undefined | RangeTransformer;
+let subThresholdB: undefined | RangeTransformer;
 
-    return baseStyle
-}
+let overThresholdR: undefined | RangeTransformer;
+let overThresholdG: undefined | RangeTransformer;
+let overThresholdB: undefined | RangeTransformer;
 
 /**
  * Generates a function that takes a range and maps it onto a new range
@@ -65,7 +50,7 @@ export const getGeoStyle = (
  */
 const genRangeTransformer = (
     startOriginal: number, endOriginal: number, startNew: number, endNew: number
-): (original: number) => number => {
+): RangeTransformer => {
     const originalRangeSize = endOriginal - startOriginal
     const newRangeSize = endNew - startNew
 
@@ -81,10 +66,36 @@ const genRangeTransformer = (
     }
 }
 
-const subMillionR = genRangeTransformer(0, 1e6, 128, 255)
-const subMillionG = genRangeTransformer(0, 1e6, 0, 204)
-const subMillionB = subMillionG
+export const getGeoStyle = (
+    geo: IGeography, currencies: ICurrency[], amount: number, baseCurrency: string, threshold: number
+): IGeoStyle => {
+    if (!subThresholdR) {
+        subThresholdR = genRangeTransformer(0, threshold, 128, 255)
+        subThresholdG = genRangeTransformer(0, threshold, 0, 204)
+        subThresholdB = subThresholdG
 
-const overMillionR = genRangeTransformer(1e6, 1e7, 204, 0)
-const overMillionG = genRangeTransformer(1e6, 1e7, 255, 128)
-const overMillionB = overMillionR
+        overThresholdR = genRangeTransformer(threshold, threshold * 10, 204, 0)
+        overThresholdG = genRangeTransformer(threshold, threshold * 10, 255, 128)
+        overThresholdB = overThresholdR
+    }
+    const baseStyle = {
+        fill: "#D6D6DA",
+        outline: "none",
+    };
+
+    if (currencies === undefined || currencies.length === 0) {
+        console.warn(
+            `no exchange rates found for ${geo.properties.NAME_LONG}`
+        );
+    } else {
+        const maxWealthInGeo = Math.max(...currencies.map(
+            (currency) => convertAmount(amount, baseCurrency, currency.code)
+        ));
+        const r = maxWealthInGeo < threshold ? subThresholdR(maxWealthInGeo) : overThresholdR!!(maxWealthInGeo)
+        const g = maxWealthInGeo < threshold ? subThresholdG!!(maxWealthInGeo) : overThresholdG!!(maxWealthInGeo)
+        const b = maxWealthInGeo < threshold ? subThresholdB!!(maxWealthInGeo) : overThresholdB!!(maxWealthInGeo)
+        baseStyle.fill = `rgb(${r}, ${g}, ${b})`
+    }
+
+    return baseStyle
+}

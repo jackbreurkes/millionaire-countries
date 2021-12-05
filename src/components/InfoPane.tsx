@@ -1,33 +1,30 @@
 import {connect} from "react-redux";
-import {convertAmount, CountryCurrenciesMap} from "../services/conversion.service";
+import {convertAmount, CountryMap, InternalCountry} from "../services/conversion.service";
 
 interface PropsFromState {
+    threshold: number,
     amount: number;
     baseCurrency: string;
 }
 
 const InfoPane = ({
-    countryCurrencies,
+    countries,
+    threshold,
     amount,
     baseCurrency
-}: { countryCurrencies: CountryCurrenciesMap; } & PropsFromState) => {
+}: { countries: CountryMap; } & PropsFromState) => {
 
-    // let millionaireCount = 0;
-    // Object.values(countryCurrencies).forEach(currencies => {
-    //     const maxWealthInGeo = Math.max(...currencies.map(
-    //         (currency) => convertAmount(amount, baseCurrency, currency.code)
-    //     ));
-    //     if (maxWealthInGeo >= 1e6) {
-    //         millionaireCount += 1;
-    //     }
-    // })
-
-    let millionaireCountries = Object.entries(countryCurrencies)
-        .map(([countryCode, currencies]) => {
-            const millionaireCurrencies = currencies.filter(currency => convertAmount(amount, baseCurrency, currency.code) > 1e6)
-            return [countryCode, millionaireCurrencies]
-        }).filter(([countryCode, countryCurrencies]) => {
-            return countryCurrencies.length > 0
+    let millionaireCountries = Object.entries(countries)
+        .map(([countryCode, country]) => {
+            const millionaireCurrencies = country.currencies.filter(
+                currency => convertAmount(amount, baseCurrency, currency.code) > threshold
+            )
+            return [
+                countryCode,
+                {...country, currencies: millionaireCurrencies}
+            ] as [string, InternalCountry] // needs to be explicitly typed otherwise the type is thought to be (string, InternalCurrency)[]
+        }).filter(([_, country]) => {
+            return country.currencies.length > 0
         })
     const millionaireCount = millionaireCountries.length
 
@@ -40,27 +37,28 @@ const InfoPane = ({
         countMessage = `You're a millionaire in ${millionaireCount} countries`
     }
 
-    const millionaireCountryList = millionaireCountries.map(([countryCode, currencies]) => {
+    const millionaireCountryList = millionaireCountries.map(([countryCode, country]) => {
         return (
-            <>
-                <p></p>
-                <li>
-
-                </li>
-            </>
+            <div key={countryCode}>
+                <h3>{country.name.common}</h3>
+                <ul>
+                    {country.currencies.map(currency => (<li key={currency.code}>{currency.name}</li>))}
+                </ul>
+            </div>
         )
     })
 
     return (
         <>
             <h1>{countMessage}</h1>
+            {millionaireCountryList}
         </>
     )
 }
 
 const mapStateToProps = (state: any): PropsFromState => {
-    const { amount, baseCurrency } = state;
-    return { amount, baseCurrency };
+    const { threshold, amount, baseCurrency } = state;
+    return { threshold, amount, baseCurrency };
 };
 
 export default connect(mapStateToProps)(InfoPane)

@@ -7,7 +7,7 @@ import {
   Geography,
 } from "react-simple-maps";
 import {
-  CountryCurrenciesMap,
+  CountryMap,
 } from "../services/conversion.service";
 import CurrencyDisplay from "./CurrencyDisplay";
 import { getGeoStyle, IGeography } from "../controllers/map-chart.controller";
@@ -16,18 +16,20 @@ const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
 
 interface PropsFromState {
+  threshold: number;
   amount: number;
   baseCurrency: string;
 }
 
 const MapChart = ({
   setTooltipContent,
-  countryCurrencies,
+  countries,
+  threshold,
   amount,
   baseCurrency,
 }: {
   setTooltipContent: (content: any) => void;
-  countryCurrencies: CountryCurrenciesMap;
+  countries: CountryMap;
 } & PropsFromState) => {
   return (
     <>
@@ -50,8 +52,8 @@ const MapChart = ({
               });
 
               return geographies.map((geo) => {
-                const geoCurrencies = countryCurrencies[geo.properties.ISO_A2];
-                const geoStyle = getGeoStyle(geo, geoCurrencies, amount, baseCurrency)
+                const country = countries[geo.properties.ISO_A2];
+                const geoStyle = getGeoStyle(geo, country.currencies, amount, baseCurrency, threshold)
 
                 return (
                   <Geography
@@ -62,7 +64,7 @@ const MapChart = ({
                       setTooltipContent(
                         <CurrencyDisplay
                           country={NAME}
-                          currencies={countryCurrencies[ISO_A2]}
+                          currencies={countries[ISO_A2].currencies}
                         />
                       );
                     }}
@@ -92,8 +94,8 @@ const MapChart = ({
 };
 
 const mapStateToProps = (state: any): PropsFromState => {
-  const { amount, baseCurrency } = state;
-  return { amount, baseCurrency };
+  const { threshold, amount, baseCurrency } = state;
+  return { threshold, amount, baseCurrency };
 };
 
 export default connect(mapStateToProps)(memo(MapChart));

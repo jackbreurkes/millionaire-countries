@@ -6,22 +6,22 @@ import Legend from "./components/Legend";
 import ReactTooltip from "react-tooltip";
 import { Provider } from "react-redux";
 import {
-  CountryCurrenciesMap,
-  getCountriesToCurrenciesMap,
+  CountryMap,
+  getCountryMap,
 } from "./services/conversion.service";
 import store from "./store";
 import AmountInput from "./components/AmountInput";
 import InfoPane from "./components/InfoPane";
 
 function App() {
-  const [currencies, setCurrencies] = useState<CountryCurrenciesMap>({});
+  const [currencies, setCurrencies] = useState<CountryMap>({});
   const [tooltipContent, setTooltipContent] = useState("");
 
   useEffect(() => {
-    getCountriesToCurrenciesMap().then((c) => setCurrencies(c));
+    getCountryMap().then((c) => setCurrencies(c));
   }, []);
 
-  if (Object.keys(currencies).length === 0) {
+  if (Object.keys(currencies).length === 0) { // TODO check if object empty instead
     return <></>;
   }
 
@@ -31,11 +31,12 @@ function App() {
         <AmountInput />
         <MapChart
           setTooltipContent={setTooltipContent}
-          countryCurrencies={currencies}
+          countries={currencies}
         />
         <ReactTooltip>{tooltipContent}</ReactTooltip>
         <Legend />
-        <InfoPane countryCurrencies={currencies} />
+        <InfoPane countries={currencies} />
+      {/*  TODO re-enable above */}
       </Provider>
     </div>
   );
