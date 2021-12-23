@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { setAmount, setCurrency } from "../store";
+import { setAmount, setCurrency } from "../app/store";
 import fx from "money";
 import styled from "styled-components";
 
@@ -11,7 +11,7 @@ interface PropsFromState {
   baseCurrency: string;
 }
 
-const Container = styled.div`
+const Container = styled.div` // TODO why this no worky?
   position: fixed;
   width: 500px;
   left: 50%;

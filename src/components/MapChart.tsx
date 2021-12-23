@@ -34,7 +34,7 @@ const MapChart = ({
   return (
     <>
       <ComposableMap
-        width={window.innerWidth}
+        width={window.innerWidth}  // TODO fix this
         height={700}
         data-tip=""
         projection="geoMercator"

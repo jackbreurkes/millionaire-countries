@@ -1,6 +1,6 @@
 import React from "react";
-import greenGradientLegend from "../assets/GreenGradientLegend.png"
-import redGradientLegend from "../assets/RedGradientLegend.png"
+import greenGradientLegend from "../../public/GreenGradientLegend.png"
+import redGradientLegend from "../../public/RedGradientLegend.png"
 import styled from "styled-components";
 
 const FlexContainer = styled.div`
