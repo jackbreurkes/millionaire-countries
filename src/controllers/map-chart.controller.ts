@@ -40,7 +40,7 @@ let overThresholdB: undefined | RangeTransformer;
 
 /**
  * Generates a function that takes a range and maps it onto a new range
- * e.g. mapping a number between 0 to 1000000 to a range from 25 to 90
+ * e.g. mapping a number from 0 to 1000000 to a range from 25 to 90
  * Numbers outside the expected range are clamped to the range
  * https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
  * @param startOriginal
@@ -48,7 +48,7 @@ let overThresholdB: undefined | RangeTransformer;
  * @param startNew
  * @param endNew
  */
-const genRangeTransformer = (
+export const genRangeTransformer = (
     startOriginal: number, endOriginal: number, startNew: number, endNew: number
 ): RangeTransformer => {
     const originalRangeSize = endOriginal - startOriginal

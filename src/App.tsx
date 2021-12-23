@@ -36,7 +36,6 @@ function App() {
         <ReactTooltip>{tooltipContent}</ReactTooltip>
         <Legend />
         <InfoPane countries={currencies} />
-      {/*  TODO re-enable above */}
       </Provider>
     </div>
   );

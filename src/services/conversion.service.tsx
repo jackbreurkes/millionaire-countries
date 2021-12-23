@@ -52,7 +52,7 @@ export async function getCountryMap() {
         let apiCurrencies = country.currencies;
         let currencies: ICurrency[] = Object.keys(apiCurrencies).map(code => ({code, ...apiCurrencies[code]}));
         currencies = currencies.filter((currency) => rates[currency.code] !== undefined);
-        accumulator[country.cca2] = { ...country, currencies } // TODO this makes things lose currencies?
+        accumulator[country.cca2] = { ...country, currencies }
         return accumulator
     }, countriesToCurrencies);
 
