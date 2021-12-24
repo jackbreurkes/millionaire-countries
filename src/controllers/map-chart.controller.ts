@@ -84,9 +84,9 @@ export const getGeoStyle = (
     };
 
     if (currencies === undefined || currencies.length === 0) {
-        console.warn(
-            `no exchange rates found for ${geo.properties.NAME_LONG}`
-        );
+        // console.warn(
+        //     `no exchange rates found for ${geo.properties.NAME_LONG}`
+        // ); // TODO add back
     } else {
         const maxWealthInGeo = Math.max(...currencies.map(
             (currency) => convertAmount(amount, baseCurrency, currency.code)

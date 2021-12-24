@@ -4,24 +4,24 @@ import Legend from "../components/Legend";
 import ReactTooltip from "react-tooltip";
 import { Provider } from "react-redux";
 import {
-  CountryMap,
-  getCountryMap,
+  CountryMap, getCountryMap, getRatesFromEuros, initMoneyJS, RatesMap,
 } from "../services/conversion.service";
 import store from "../app/store";
 import AmountInput from "../components/AmountInput";
 import InfoPane from "../components/InfoPane";
 
-function Home({ currenciesSSR }: { currenciesSSR: CountryMap }) { // TODO use currenciesSSR
-  const [currencies, setCurrencies] = useState<CountryMap>({});
+function Home({ currenciesSSR, ratesSSR }: { currenciesSSR: CountryMap, ratesSSR: RatesMap }) { // TODO use currenciesSSR
+  const currencies: CountryMap = currenciesSSR;
   const [tooltipContent, setTooltipContent] = useState("");
   const [showMap, setShowMap] = useState(false)
 
   useEffect(() => {
-    getCountryMap().then((c) => setCurrencies(c));
+    initMoneyJS(ratesSSR);
+    setShowMap(true)
   }, []);
 
-  if (Object.keys(currencies).length === 0) { // TODO check if object empty instead
-    return <></>;
+  if (!showMap) {
+    return <><p>loading...</p></>;
   }
 
   return (
@@ -41,10 +41,12 @@ function Home({ currenciesSSR }: { currenciesSSR: CountryMap }) { // TODO use cu
 }
 
 export async function getStaticProps() {
-  const currenciesSSR = await getCountryMap();
+  const ratesSSR = await getRatesFromEuros();
+  const currencies = await getCountryMap(ratesSSR);
   return {
     props: {
-      currenciesSSR
+      currenciesSSR: currencies,
+      ratesSSR,
     }
   }
 }
