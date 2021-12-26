@@ -1,9 +1,9 @@
 import React from "react";
-import greenGradientLegend from "../../public/GreenGradientLegend.png"
-import redGradientLegend from "../../public/RedGradientLegend.png"
 import styled from "styled-components";
 
 const FlexContainer = styled.div`
+  position: fixed;
+  bottom: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -20,16 +20,14 @@ const FlexImg = styled.img`
 
 const Legend = () => {
     return (
-        <>
-            <FlexContainer>
-                <FlexContent>
-                    <FlexImg src={redGradientLegend} alt="Gradient for amounts below one million"/>
-                </FlexContent>
-                <FlexContent>
-                    <FlexImg src={greenGradientLegend} alt="Gradient for amounts over one million"/>
-                </FlexContent>
-            </FlexContainer>
-        </>
+        <FlexContainer>
+            <FlexContent>
+                <FlexImg src="/RedGradientLegend.png" alt="Gradient for amounts below one million"/>
+            </FlexContent>
+            <FlexContent>
+                <FlexImg src="/GreenGradientLegend.png" alt="Gradient for amounts over one million"/>
+            </FlexContent>
+        </FlexContainer>
     );
 };
 

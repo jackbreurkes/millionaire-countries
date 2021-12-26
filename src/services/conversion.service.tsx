@@ -16,7 +16,10 @@ interface APICountry extends BaseCountry {
     currencies: {[code: string]: {name: string, symbol: string} };
 }
 
-export interface RatesMap { [countryCodeA3: string]: number }
+export interface RatesDetails {
+    base: string;
+    rates: { [countryCodeA3: string]: number };
+}
 
 export interface InternalCountry extends BaseCountry {
     currencies: ICurrency[];
@@ -44,22 +47,21 @@ export function convertAmount(
 }
 
 
-export async function getCountryMap(ratesFromEuros: RatesMap) {
+// TODO split getting response from restructuring to avoid awaiting both at once
+// although... does it even matter if its all SSR'd?
+export async function getCountryMap(rates: RatesDetails) {
     // const {data}: { data: APICountry[] } = await axios.get(
     //     `https://restcountries.com/v3.1/all?fields=name,cca2,cca3,currencies`
     // );
     await new Promise(resolve => setTimeout(resolve, 500));  // TODO remove
     // @ts-ignore
-    const data: APICountry[] = demoRestCountriesRes; // TODO remove
-    const rates = await getRatesFromEuros();
-    // TODO use promise.all for above requests to speed things up
+    const data: APICountry[] = demoRestCountriesRes; // TODO remove, go back to API
 
     let countriesToCurrencies: CountryMap = {};
-    console.log(rates)
     data.reduce((accumulator, country) => {
         let apiCurrencies = country.currencies;
         let currencies: ICurrency[] = Object.keys(apiCurrencies).map(code => ({code, ...apiCurrencies[code]}));
-        currencies = currencies.filter((currency) => rates[currency.code] !== undefined);
+        currencies = currencies.filter((currency) => rates.rates[currency.code] !== undefined);
         accumulator[country.cca2] = { ...country, currencies }
         return accumulator
     }, countriesToCurrencies);
@@ -67,18 +69,18 @@ export async function getCountryMap(ratesFromEuros: RatesMap) {
     return countriesToCurrencies;
 }
 
-export async function getRatesFromEuros(): Promise<RatesMap> {
+export async function getExchangeRates(): Promise<RatesDetails> {
     // const res = await axios.get(
     //     `http://data.fixer.io/api/latest?access_key=${FIXER_API_KEY}`
-    // );
+    // ); // TODO maybe use openexchangerates.org since I get 1000 requests per month
 
     await new Promise(resolve => setTimeout(resolve, 500)); // TODO remove
-    const rates = demoFixerRes.data.rates; // TODO remove
+    const rates = demoFixerRes; // TODO remove
     initMoneyJS(rates);
     return rates;
 }
 
-export function initMoneyJS(rates: RatesMap) {
-    fx.rates = rates;
-    fx.base = EUR_CURRENCY_CODE;
+export function initMoneyJS(rates: RatesDetails) {
+    fx.rates = rates.rates;
+    fx.base = rates.base;
 }

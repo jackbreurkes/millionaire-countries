@@ -2,21 +2,18 @@ import React, { useEffect, useState } from "react";
 import MapChart from "../components/MapChart";
 import Legend from "../components/Legend";
 import ReactTooltip from "react-tooltip";
-import { Provider } from "react-redux";
 import {
-  CountryMap, getCountryMap, getRatesFromEuros, initMoneyJS, RatesMap,
+  CountryMap, getCountryMap, getExchangeRates, initMoneyJS, RatesDetails,
 } from "../services/conversion.service";
-import store from "../app/store";
 import AmountInput from "../components/AmountInput";
 import InfoPane from "../components/InfoPane";
 
-function Home({ currenciesSSR, ratesSSR }: { currenciesSSR: CountryMap, ratesSSR: RatesMap }) { // TODO use currenciesSSR
-  const currencies: CountryMap = currenciesSSR;
+function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetails }) { // TODO use currenciesSSR
   const [tooltipContent, setTooltipContent] = useState("");
   const [showMap, setShowMap] = useState(false)
 
   useEffect(() => {
-    initMoneyJS(ratesSSR);
+    initMoneyJS(rates); // required because money.js uses global state
     setShowMap(true)
   }, []);
 
@@ -26,27 +23,25 @@ function Home({ currenciesSSR, ratesSSR }: { currenciesSSR: CountryMap, ratesSSR
 
   return (
     <div>
-      <Provider store={store}>
-        <AmountInput />
-        <MapChart
-          setTooltipContent={setTooltipContent}
-          countries={currencies}
-        />
-        <ReactTooltip>{tooltipContent}</ReactTooltip>
-        <Legend />
-        <InfoPane countries={currencies} />
-      </Provider>
+      <AmountInput />
+      <MapChart
+        setTooltipContent={setTooltipContent}
+        countries={currencies}
+      />
+      <ReactTooltip>{tooltipContent}</ReactTooltip>
+      <Legend />
+      {/*<InfoPane countries={currencies} />*/}
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const ratesSSR = await getRatesFromEuros();
-  const currencies = await getCountryMap(ratesSSR);
+  const rates = await getExchangeRates();
+  const currencies = await getCountryMap(rates); // TODO use promise.all
   return {
     props: {
-      currenciesSSR: currencies,
-      ratesSSR,
+      currencies,
+      rates,
     }
   }
 }

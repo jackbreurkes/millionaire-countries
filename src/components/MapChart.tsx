@@ -1,25 +1,44 @@
-import React, { memo } from "react";
+import React, {memo, useEffect, useState} from "react";
 import { connect } from "react-redux";
 import {
   ZoomableGroup,
   ComposableMap,
   Geographies,
-  Geography,
+  Geography, Graticule, Sphere,
 } from "react-simple-maps";
 import {
   CountryMap,
 } from "../services/conversion.service";
 import CurrencyDisplay from "./CurrencyDisplay";
-import { getGeoStyle, IGeography } from "../controllers/map-chart.controller";
+import {getGeoStyle, IGeography, getHoverColour} from "../controllers/map-chart.controller";
+import styled from "styled-components";
+import ReactTooltip from "react-tooltip";
 
-const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+// from https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json
+const geoUrl = "/world-110m.json"; // defines the shapes of each country
+const projection = "geoEqualEarth"; // defines the shape/warping of the map as a whole
+const graticuleColor = "#86C8F4";
+const fillColor = "#95D4FF";
 
 interface PropsFromState {
   threshold: number;
   amount: number;
   baseCurrency: string;
 }
+
+interface MapPosition {
+  coordinates: [number, number];
+  zoom: number;
+}
+
+const getHeightFromWindow = () => {
+  return Math.min(Math.max(window.innerWidth * 0.8, 500), window.innerHeight * 0.6)
+}
+
+const getDefaultPosition = (width: number, height: number): MapPosition => ({
+  coordinates: [0, -height * 0.005],
+  zoom: Math.min(width / 800, 1.5)
+});
 
 const MapChart = ({
   setTooltipContent,
@@ -31,17 +50,63 @@ const MapChart = ({
   setTooltipContent: (content: any) => void;
   countries: CountryMap;
 } & PropsFromState) => {
+  const width = window.innerWidth;
+  const [height, setHeight] = useState(getHeightFromWindow());
+  const [position, setPosition] = useState<MapPosition>(getDefaultPosition(width, height));
+  const [hasDragged, setHasDragged] = useState(false);
+
+  const [innerWidth, setInnerWidth] = useState<number | undefined>();
+
+  useEffect(() => {
+    // Handler to call on window resize
+    function handleResize() {
+      setInnerWidth(window.innerWidth)
+    }
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    setHeight(window.innerHeight);
+    if (!hasDragged) {
+      setPosition(getDefaultPosition(width, height));
+    }
+  }, [innerWidth]);
+
+  function handleMoveEnd(position: MapPosition) {
+    setPosition(position);
+    setHasDragged(true);
+  }
+
+  // @ts-ignore
+  // @ts-ignore
   return (
     <>
       <ComposableMap
-        width={window.innerWidth}  // TODO fix this
-        height={700}
-        data-tip=""
-        projection="geoMercator"
-        projectionConfig={{ scale: 100 }}
+        width={width}
+        height={height}
+        projection={projection}
+        projectionConfig={{ scale: 147 }}
       >
-        <ZoomableGroup>
-          <Geographies geography={geoUrl}>
+        <ZoomableGroup
+          center={position.coordinates}
+          zoom={position.zoom}
+          data-tip="" // required for tooltip to work
+          minZoom={0.5}
+          // translateExtent={[[-0.5 * width, -0.5 * height], [1.5 * width, 1.5 * height]]}
+          onMoveEnd={handleMoveEnd}
+        >
+          {/* @ts-ignore required properties */}
+          <Sphere stroke={graticuleColor} strokeWidth={1} fill={fillColor} />
+          <Graticule stroke={graticuleColor} step={[10, 10]} />
+          <Geographies
+              geography={geoUrl}
+              data-tip="" // having this in multiple places feels hacky but seems to dodge the pointer follow bug
+          >
             {({ geographies }: { geographies: IGeography[] }) => {
               geographies.forEach((geo) => {
                 let countryCode = geo.properties.ISO_A2;
@@ -67,6 +132,7 @@ const MapChart = ({
                           currencies={countries[ISO_A2].currencies}
                         />
                       );
+                      ReactTooltip.rebuild() // this might help to fix the pointer tracking bug?
                     }}
                     onMouseLeave={() => {
                       setTooltipContent("");
@@ -74,11 +140,11 @@ const MapChart = ({
                     style={{
                       default: geoStyle,
                       hover: {
-                        fill: "#F53",
+                        fill: getHoverColour(geoStyle.fill),
                         outline: "none",
                       },
                       pressed: {
-                        fill: "#E42",
+                        fill: getHoverColour(geoStyle.fill),
                         outline: "none",
                       },
                     }}

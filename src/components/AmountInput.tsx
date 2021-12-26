@@ -11,7 +11,7 @@ interface PropsFromState {
   baseCurrency: string;
 }
 
-const Container = styled.div` // TODO why this no worky?
+const Container = styled.div`
   position: fixed;
   width: 500px;
   left: 50%;

@@ -1,4 +1,5 @@
 import {convertAmount, ICurrency} from "../services/conversion.service";
+import Color from "color";
 
 export interface IGeography {
     geometry: any;
@@ -79,14 +80,14 @@ export const getGeoStyle = (
         overThresholdB = overThresholdR
     }
     const baseStyle = {
-        fill: "#D6D6DA",
+        fill: "#fff",
         outline: "none",
     };
 
     if (currencies === undefined || currencies.length === 0) {
-        // console.warn(
-        //     `no exchange rates found for ${geo.properties.NAME_LONG}`
-        // ); // TODO add back
+        console.warn(
+            `no exchange rates found for ${geo.properties.NAME_LONG}`
+        ); // TODO move this somewhere else?
     } else {
         const maxWealthInGeo = Math.max(...currencies.map(
             (currency) => convertAmount(amount, baseCurrency, currency.code)
@@ -94,8 +95,16 @@ export const getGeoStyle = (
         const r = maxWealthInGeo < threshold ? subThresholdR(maxWealthInGeo) : overThresholdR!!(maxWealthInGeo)
         const g = maxWealthInGeo < threshold ? subThresholdG!!(maxWealthInGeo) : overThresholdG!!(maxWealthInGeo)
         const b = maxWealthInGeo < threshold ? subThresholdB!!(maxWealthInGeo) : overThresholdB!!(maxWealthInGeo)
-        baseStyle.fill = `rgb(${r}, ${g}, ${b})`
+        baseStyle.fill = Color.rgb(r, g, b).hex();
     }
 
     return baseStyle
+}
+
+/**
+ * Modifies a colour string for when it is hovered over.
+ * @param color the colour string to modify
+ */
+export function getHoverColour(color: string) {
+    return Color(color).saturate(1).blue(255).hex();
 }

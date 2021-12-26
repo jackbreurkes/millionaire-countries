@@ -1,11 +1,16 @@
 import {connect} from "react-redux";
 import {convertAmount, CountryMap, InternalCountry} from "../services/conversion.service";
+import styled from "styled-components";
 
 interface PropsFromState {
     threshold: number,
     amount: number;
     baseCurrency: string;
 }
+
+const InfoPaneContainer = styled.div`
+  padding: 10px;
+`
 
 const InfoPane = ({
     countries,
@@ -37,22 +42,28 @@ const InfoPane = ({
         countMessage = `You're a millionaire in ${millionaireCount} countries`
     }
 
+    // sort countries by common name
+    millionaireCountries.sort(([, country1], [, country2]) => {
+        return country1.name.common.localeCompare(country2.name.common)
+    })
+
     const millionaireCountryList = millionaireCountries.map(([countryCode, country]) => {
         return (
             <div key={countryCode}>
-                <h3>{country.name.common}</h3>
-                <ul>
-                    {country.currencies.map(currency => (<li key={currency.code}>{currency.name}</li>))}
-                </ul>
+                <h3 key={country.cca3}>{country.name.common}</h3>
+                {/*<h3>{country.name.common}</h3>*/}
+                {/*<ul>*/}
+                {/*    {country.currencies.map(currency => (<li key={currency.code}>{currency.name}</li>))}*/}
+                {/*</ul>*/}
             </div>
         )
     })
 
     return (
-        <>
+        <InfoPaneContainer>
             <h1>{countMessage}</h1>
             {millionaireCountryList}
-        </>
+        </InfoPaneContainer>
     )
 }
 
