@@ -1,23 +1,29 @@
 import {connect} from "react-redux";
 import {convertAmount, CountryMap, InternalCountry} from "../services/conversion.service";
 import styled from "styled-components";
+import {Box, Flex} from "rebass";
+import {Input, Label, Select} from "@rebass/forms";
+import fx from "money";
+import React from "react";
 
 interface PropsFromState {
     threshold: number,
-    amount: number;
+    amount: number | null;
     baseCurrency: string;
 }
 
-const InfoPaneContainer = styled.div`
-  padding: 10px;
+type AllProps = PropsFromState & { countries: CountryMap };
+
+const MessageHeading = styled.h1`
+  //padding: 10px;
+  margin: 0;
+  text-align: center;
 `
 
-const InfoPane = ({
-    countries,
-    threshold,
-    amount,
-    baseCurrency
-}: { countries: CountryMap; } & PropsFromState) => {
+const getMessage = ({amount, baseCurrency, threshold, countries}: AllProps) => {
+    if (amount === null) {
+        return "Enter your net worth below";
+    }
 
     let millionaireCountries = Object.entries(countries)
         .map(([countryCode, country]) => {
@@ -35,35 +41,33 @@ const InfoPane = ({
 
     let countMessage: string;
     if (millionaireCount === 0) {
-        countMessage = "You aren't a millionaire anywhere!"
+        countMessage = "You aren't a millionaire anywhere"
     } else if (millionaireCount === 1) {
         countMessage = "You're a millionaire in 1 country"
     } else {
         countMessage = `You're a millionaire in ${millionaireCount} countries`
     }
+    return countMessage;
+}
 
-    // sort countries by common name
-    millionaireCountries.sort(([, country1], [, country2]) => {
-        return country1.name.common.localeCompare(country2.name.common)
-    })
-
-    const millionaireCountryList = millionaireCountries.map(([countryCode, country]) => {
-        return (
-            <div key={countryCode}>
-                <h3 key={country.cca3}>{country.name.common}</h3>
-                {/*<h3>{country.name.common}</h3>*/}
-                {/*<ul>*/}
-                {/*    {country.currencies.map(currency => (<li key={currency.code}>{currency.name}</li>))}*/}
-                {/*</ul>*/}
-            </div>
-        )
-    })
-
+const InfoPane = ({
+    countries,
+    threshold,
+    amount,
+    baseCurrency
+}: AllProps) => {
+    const countMessage = getMessage({amount, baseCurrency, threshold, countries})
     return (
-        <InfoPaneContainer>
-            <h1>{countMessage}</h1>
-            {millionaireCountryList}
-        </InfoPaneContainer>
+        <Box
+            pt={3}>
+            <Flex>
+                <Box mx='auto'>
+                    <MessageHeading>
+                        {countMessage}
+                    </MessageHeading>
+                </Box>
+            </Flex>
+        </Box>
     )
 }
 

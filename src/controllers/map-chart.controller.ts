@@ -68,8 +68,16 @@ export const genRangeTransformer = (
 }
 
 export const getGeoStyle = (
-    geo: IGeography, currencies: ICurrency[], amount: number, baseCurrency: string, threshold: number
+    geo: IGeography, currencies: ICurrency[], amount: number | null, baseCurrency: string, threshold: number
 ): IGeoStyle => {
+    const baseStyle = {
+        fill: "#fff",
+        outline: "none",
+    };
+    if (amount === null) {
+        return baseStyle;
+    }
+
     if (!subThresholdR) {
         subThresholdR = genRangeTransformer(0, threshold, 128, 255)
         subThresholdG = genRangeTransformer(0, threshold, 0, 204)
@@ -79,10 +87,6 @@ export const getGeoStyle = (
         overThresholdG = genRangeTransformer(threshold, threshold * 10, 255, 128)
         overThresholdB = overThresholdR
     }
-    const baseStyle = {
-        fill: "#fff",
-        outline: "none",
-    };
 
     if (currencies === undefined || currencies.length === 0) {
         console.warn(

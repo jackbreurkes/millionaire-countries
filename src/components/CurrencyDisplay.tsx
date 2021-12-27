@@ -5,10 +5,7 @@ import { connect } from "react-redux";
 interface BaseProps {
   country: string;
   currencies: ICurrency[]; // TODO handle no currencies
-}
-
-interface PropsFromState {
-  amount: number;
+  amount: number | null;
   baseCurrency: string;
 }
 
@@ -22,12 +19,15 @@ const formatAmount = (amount: number, currencyCode: string): string => {
   return formatter.format(amount);
 };
 
-const CurrencyDisplay = (props: BaseProps & PropsFromState) => {
-  let amounts: ReactElement | ReactElement[] = <p>No currencies found</p>
-  if (props.currencies.length > 0) {
+const CurrencyDisplay = (props: BaseProps) => {
+  let amounts: ReactElement | ReactElement[] | null = <p>No currencies found</p>
+
+  if (props.amount === null) {
+    amounts = null
+  } else if (props.currencies.length > 0) {
     amounts = props.currencies.map((currency) => {
       const convertedAmount = convertAmount(
-          props.amount,
+          props.amount!!,
           props.baseCurrency,
           currency.code
       );
@@ -48,9 +48,4 @@ const CurrencyDisplay = (props: BaseProps & PropsFromState) => {
   );
 };
 
-const mapStateToProps = (state: any): PropsFromState => {
-  const { amount, baseCurrency } = state;
-  return { amount, baseCurrency };
-};
-
-export default connect(mapStateToProps)(CurrencyDisplay);
+export default CurrencyDisplay;

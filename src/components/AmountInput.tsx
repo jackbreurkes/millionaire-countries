@@ -2,36 +2,21 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { setAmount, setCurrency } from "../app/store";
 import fx from "money";
-import styled from "styled-components";
-
-import { InputGroup, Input } from "reactstrap";
+import { Label, Select, Input } from "@rebass/forms"
+import {Box, Flex} from "rebass";
 
 interface PropsFromState {
   amount: number;
   baseCurrency: string;
 }
 
-const Container = styled.div`
-  position: fixed;
-  width: 500px;
-  left: 50%;
-  margin-left: -250px;
-  display: flex;
-`;
-
-const DropdownContainer = styled.div`
-  flex: 1;
-`;
-
-const InputContainer = styled.div`
-  flex: 3;
-`;
+const fontSize = 3;
 
 const AmountInput = (
   props: { setAmount?: any; setCurrency?: any } & PropsFromState
 ) => {
   const [amountInputValue, setAmountInputValue] = useState(
-    props.amount.toString()
+    props.amount ? props.amount.toString() : ""
   );
   const [currencyInputValue, setCurrencyInputValue] = useState(
     props.baseCurrency
@@ -39,7 +24,7 @@ const AmountInput = (
 
   const updateAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmountInputValue(e.target.value);
-    props.setAmount(e.target.value);
+    props.setAmount(e.target.value || null);
   };
 
   const updateCurrency = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,30 +33,38 @@ const AmountInput = (
   };
 
   return (
-    <Container>
-      <InputGroup>
-        <DropdownContainer>
-          <Input
-            type="select"
-            name="currency"
-            value={currencyInputValue}
-            onChange={updateCurrency}
-          >
-            {Object.keys(fx.rates).map((currency) => (
-              <option key={currency}>{currency}</option>
-            ))}
-          </Input>
-        </DropdownContainer>
-        <InputContainer>
-          <Input
-            type="number"
-            name="amount"
-            value={amountInputValue}
-            onChange={updateAmount}
-          />
-        </InputContainer>
-      </InputGroup>
-    </Container>
+    <Box py={3}>
+        <Flex mb={3}>
+            <Box mx='auto' />
+            <Box width={110} px={1}>
+                <Label htmlFor='currency'>Currency</Label>
+                <Select
+                    id='currency'
+                    name='currency'
+                    fontSize={fontSize}
+                    value={currencyInputValue}
+                    // @ts-ignore
+                    onChange={updateCurrency}
+                >
+                    {Object.keys(fx.rates).map((currency) => (
+                        <option key={currency}>{currency}</option>
+                    ))}
+                </Select>
+            </Box>
+            <Box width={250} px={1}>
+                <Label htmlFor='amount'>Amount</Label>
+                <Input
+                    id='amount'
+                    name='amount'
+                    type='number'
+                    fontSize={fontSize}
+                    value={amountInputValue}
+                    onChange={updateAmount}
+                />
+            </Box>
+            <Box mx='auto' />
+        </Flex>
+    </Box>
   );
 };
 

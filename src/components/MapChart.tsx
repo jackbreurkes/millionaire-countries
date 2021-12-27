@@ -18,11 +18,11 @@ import ReactTooltip from "react-tooltip";
 const geoUrl = "/world-110m.json"; // defines the shapes of each country
 const projection = "geoEqualEarth"; // defines the shape/warping of the map as a whole
 const graticuleColor = "#86C8F4";
-const fillColor = "#95D4FF";
+const fillColor = "#95D4FF"; // TODO hard to see some countries with USD 255
 
 interface PropsFromState {
   threshold: number;
-  amount: number;
+  amount: number | null;
   baseCurrency: string;
 }
 
@@ -130,6 +130,8 @@ const MapChart = ({
                         <CurrencyDisplay
                           country={NAME}
                           currencies={countries[ISO_A2].currencies}
+                          amount={amount}
+                          baseCurrency={baseCurrency}
                         />
                       );
                       ReactTooltip.rebuild() // this might help to fix the pointer tracking bug?

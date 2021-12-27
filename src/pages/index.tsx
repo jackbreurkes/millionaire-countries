@@ -7,6 +7,13 @@ import {
 } from "../services/conversion.service";
 import AmountInput from "../components/AmountInput";
 import InfoPane from "../components/InfoPane";
+import styled from "styled-components";
+
+const HeaderBar = styled.div`
+  position: fixed;
+  top: 0;
+  width: 100%;
+`
 
 function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetails }) { // TODO use currenciesSSR
   const [tooltipContent, setTooltipContent] = useState("");
@@ -23,14 +30,16 @@ function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetai
 
   return (
     <div>
-      <AmountInput />
+        <HeaderBar>
+            <InfoPane countries={currencies}/>
+            <AmountInput />
+        </HeaderBar>
       <MapChart
         setTooltipContent={setTooltipContent}
         countries={currencies}
       />
       <ReactTooltip>{tooltipContent}</ReactTooltip>
       <Legend />
-      {/*<InfoPane countries={currencies} />*/}
     </div>
   );
 }
