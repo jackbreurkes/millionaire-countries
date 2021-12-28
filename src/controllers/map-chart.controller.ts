@@ -106,9 +106,13 @@ export const getGeoStyle = (
 }
 
 /**
- * Modifies a colour string for when it is hovered over.
+ * Returns the correct hover colour for a given colour
  * @param color the colour string to modify
  */
 export function getHoverColour(color: string) {
-    return Color(color).saturate(1).blue(255).hex();
+    let newColor = Color(color);
+    if (newColor.luminosity() > 0.999) { // if colour is white
+        return "#dfdfdf";
+    }
+    return "#f1f1f1";
 }

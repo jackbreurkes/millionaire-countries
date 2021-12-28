@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { setAmount, setCurrency } from "../app/store";
 import fx from "money";
-import { Label, Select, Input } from "@rebass/forms"
+import { Select, Input } from "@rebass/forms"
 import {Box, Flex} from "rebass";
 
 interface PropsFromState {
@@ -10,7 +10,7 @@ interface PropsFromState {
   baseCurrency: string;
 }
 
-const fontSize = 3;
+const fontSize = 2;
 
 const AmountInput = (
   props: { setAmount?: any; setCurrency?: any } & PropsFromState
@@ -33,11 +33,10 @@ const AmountInput = (
   };
 
   return (
-    <Box py={3}>
-        <Flex mb={3}>
+    <Box pt={3}>
+        <Flex>
             <Box mx='auto' />
-            <Box width={110} px={1}>
-                <Label htmlFor='currency'>Currency</Label>
+            <Box width={75} mr={1}>
                 <Select
                     id='currency'
                     name='currency'
@@ -45,21 +44,29 @@ const AmountInput = (
                     value={currencyInputValue}
                     // @ts-ignore
                     onChange={updateCurrency}
+                    sx={{
+                        backgroundColor: 'white',
+                        borderRadius: '6px',
+                    }}
                 >
                     {Object.keys(fx.rates).map((currency) => (
                         <option key={currency}>{currency}</option>
                     ))}
                 </Select>
             </Box>
-            <Box width={250} px={1}>
-                <Label htmlFor='amount'>Amount</Label>
+            <Box width={160}>
                 <Input
                     id='amount'
                     name='amount'
                     type='number'
+                    placeholder='amount'
                     fontSize={fontSize}
                     value={amountInputValue}
                     onChange={updateAmount}
+                    sx={{
+                        'background-color': 'white',
+                        'border-radius': '6px'
+                    }}
                 />
             </Box>
             <Box mx='auto' />

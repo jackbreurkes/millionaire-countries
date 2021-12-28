@@ -6,7 +6,7 @@ import {
   CountryMap, getCountryMap, getExchangeRates, initMoneyJS, RatesDetails,
 } from "../services/conversion.service";
 import AmountInput from "../components/AmountInput";
-import InfoPane from "../components/InfoPane";
+import MillionaireCount from "../components/MillionaireCount";
 import styled from "styled-components";
 
 const HeaderBar = styled.div`
@@ -31,7 +31,7 @@ function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetai
   return (
     <div>
         <HeaderBar>
-            <InfoPane countries={currencies}/>
+            <MillionaireCount countries={currencies}/>
             <AmountInput />
         </HeaderBar>
       <MapChart
@@ -46,7 +46,7 @@ function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetai
 
 export async function getStaticProps() {
   const rates = await getExchangeRates();
-  const currencies = await getCountryMap(rates); // TODO use promise.all
+  const currencies = await getCountryMap(rates); // TODO use promise.all? does it matter for SSR?
   return {
     props: {
       currencies,

@@ -2,8 +2,6 @@ import {connect} from "react-redux";
 import {convertAmount, CountryMap, InternalCountry} from "../services/conversion.service";
 import styled from "styled-components";
 import {Box, Flex} from "rebass";
-import {Input, Label, Select} from "@rebass/forms";
-import fx from "money";
 import React from "react";
 
 interface PropsFromState {
@@ -15,9 +13,17 @@ interface PropsFromState {
 type AllProps = PropsFromState & { countries: CountryMap };
 
 const MessageHeading = styled.h1`
-  //padding: 10px;
   margin: 0;
   text-align: center;
+`
+
+const HeadingHighlight = styled.span`
+  padding: 2px 6px;
+  line-height: 1.1; /* adjust this to avoid overlapping the padding */
+  background-color: white;
+  border-radius: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 `
 
 const getMessage = ({amount, baseCurrency, threshold, countries}: AllProps) => {
@@ -50,7 +56,7 @@ const getMessage = ({amount, baseCurrency, threshold, countries}: AllProps) => {
     return countMessage;
 }
 
-const InfoPane = ({
+const MillionaireCount = ({
     countries,
     threshold,
     amount,
@@ -63,7 +69,7 @@ const InfoPane = ({
             <Flex>
                 <Box mx='auto'>
                     <MessageHeading>
-                        {countMessage}
+                        <HeadingHighlight>{countMessage}</HeadingHighlight>
                     </MessageHeading>
                 </Box>
             </Flex>
@@ -76,4 +82,4 @@ const mapStateToProps = (state: any): PropsFromState => {
     return { threshold, amount, baseCurrency };
 };
 
-export default connect(mapStateToProps)(InfoPane)
+export default connect(mapStateToProps)(MillionaireCount)

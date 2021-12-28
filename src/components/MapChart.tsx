@@ -18,7 +18,7 @@ import ReactTooltip from "react-tooltip";
 const geoUrl = "/world-110m.json"; // defines the shapes of each country
 const projection = "geoEqualEarth"; // defines the shape/warping of the map as a whole
 const graticuleColor = "#86C8F4";
-const fillColor = "#95D4FF"; // TODO hard to see some countries with USD 255
+const fillColor = "#95D4FF";
 
 interface PropsFromState {
   threshold: number;
@@ -101,10 +101,12 @@ const MapChart = ({
           onMoveEnd={handleMoveEnd}
         >
           {/* @ts-ignore required properties */}
-          <Sphere stroke={graticuleColor} strokeWidth={1} fill={fillColor} />
-          <Graticule stroke={graticuleColor} step={[10, 10]} />
+          <Sphere stroke={graticuleColor} strokeWidth={1.2} fill={fillColor} />
+          <Graticule stroke={graticuleColor} strokeWidth={0.6} step={[10, 10]} />
           <Geographies
               geography={geoUrl}
+              stroke="#222"
+              strokeWidth={0.3}
               data-tip="" // having this in multiple places feels hacky but seems to dodge the pointer follow bug
           >
             {({ geographies }: { geographies: IGeography[] }) => {
