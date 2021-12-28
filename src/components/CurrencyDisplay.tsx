@@ -1,6 +1,5 @@
 import React, {ReactElement} from "react";
 import { ICurrency, convertAmount } from "../services/conversion.service";
-import { connect } from "react-redux";
 
 interface BaseProps {
   country: string;
