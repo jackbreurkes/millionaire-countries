@@ -15,10 +15,10 @@ const Legend = () => {
     return (
         <FlexContainer>
             <Box width={1 / 2} maxWidth={400} px={2}>
-                <Image src="/RedGradientLegend.png" width={992} height={100}/>
+                <Image src="/images/RedGradientLegend.png" width={992} height={100}/>
             </Box>
             <Box width={1 / 2} maxWidth={400} px={2}>
-                <Image src="/GreenGradientLegend.png" width={992} height={100}/>
+                <Image src="/images/GreenGradientLegend.png" width={992} height={100}/>
             </Box>
         </FlexContainer>
     );

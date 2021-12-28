@@ -15,7 +15,7 @@ const HeaderBar = styled.div`
   width: 100%;
 `
 
-function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetails }) { // TODO use currenciesSSR
+function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetails }) {
   const [tooltipContent, setTooltipContent] = useState("");
   const [showMap, setShowMap] = useState(false)
 
