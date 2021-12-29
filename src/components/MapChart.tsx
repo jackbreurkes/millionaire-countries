@@ -9,7 +9,7 @@ import {
 import {
   CountryMap,
 } from "../services/conversion.service";
-import CurrencyDisplay from "./CurrencyDisplay";
+import TooltipContent from "./TooltipContent";
 import {getGeoStyle, IGeography, getHoverColour} from "../controllers/map-chart.controller";
 import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
@@ -129,7 +129,7 @@ const MapChart = ({
                     onMouseEnter={() => {
                       const { NAME, ISO_A2 } = geo.properties;
                       setTooltipContent(
-                        <CurrencyDisplay
+                        <TooltipContent
                           country={NAME}
                           currencies={countries[ISO_A2].currencies}
                           amount={amount}

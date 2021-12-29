@@ -3,7 +3,7 @@ import { ICurrency, convertAmount } from "../services/conversion.service";
 
 interface BaseProps {
   country: string;
-  currencies: ICurrency[]; // TODO handle no currencies
+  currencies: ICurrency[];
   amount: number | null;
   baseCurrency: string;
 }
@@ -18,7 +18,7 @@ const formatAmount = (amount: number, currencyCode: string): string => {
   return formatter.format(amount);
 };
 
-const CurrencyDisplay = (props: BaseProps) => {
+const TooltipContent = (props: BaseProps) => {
   let amounts: ReactElement | ReactElement[] | null = <p>No currencies found</p>
 
   if (props.amount === null) {
@@ -47,4 +47,4 @@ const CurrencyDisplay = (props: BaseProps) => {
   );
 };
 
-export default CurrencyDisplay;
+export default TooltipContent;
