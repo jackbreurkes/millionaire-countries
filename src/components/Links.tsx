@@ -1,7 +1,21 @@
-import {Box, Button, Flex} from "rebass";
+import {Box, Button, Flex, Link, Text} from "rebass";
 import Image from "next/image";
 import React from "react";
 import ReactDOM from "react-dom";
+
+const iconSize = 20;
+
+const buttonStyle = {
+    color: "black",
+    backgroundColor: "white",
+    padding: "6px 12px",
+    fontSize: "16px",
+    cursor: "pointer",
+    borderRadius: 6,
+    ':hover': {
+        backgroundColor: "#efefef",
+    },
+}
 
 /**
  * This function takes the <svg> element rendered by react-simple-maps and downloads
@@ -44,18 +58,30 @@ function downloadMapAsSVG() {
 const Links = () => {
     return (
         <Flex justifyContent="center">
-            <Button onClick={downloadMapAsSVG} sx={{
-                color: "black",
-                backgroundColor: "aliceblue",
-            }}>
-                download
-            </Button>
-            <Button sx={{
-                color: "black",
-                backgroundColor: "aliceblue",
-            }}>
-                GitHub
-            </Button>
+            <Box width={1 / 2} p={1}>
+                <Flex justifyContent="flex-end">
+                    <Box>
+                        <Button m={1} onClick={downloadMapAsSVG} sx={buttonStyle}>
+                            <Image src="/images/mat-download-icon.svg" height={iconSize} width={iconSize}/>
+                            <Text pt={1}>Save</Text>
+                        </Button>
+                    </Box>
+                </Flex>
+            </Box>
+
+            <Box width={1 / 2} p={1}>
+                <Flex justifyContent="flex-start">
+                    <Box>
+                        <Button m={1} sx={buttonStyle}>
+                            <Image src="/images/github-logo.svg" height={iconSize} width={iconSize}/>
+                            <Text pt={1}><Link sx={
+                                { color: "black", textDecoration: "none" }
+                            } href='https://rebassjs.org'>GitHub</Link></Text>
+
+                        </Button>
+                    </Box>
+                </Flex>
+            </Box>
         </Flex>
     )
 }

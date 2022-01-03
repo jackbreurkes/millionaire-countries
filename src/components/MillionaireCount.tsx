@@ -1,16 +1,11 @@
-import {connect} from "react-redux";
+import {connect, ConnectedProps} from "react-redux";
 import {convertAmount, CountryMap, InternalCountry} from "../services/conversion.service";
 import styled from "styled-components";
 import {Box, Flex} from "rebass";
 import React from "react";
+import {RootState} from "../app/store";
 
-interface PropsFromState {
-    threshold: number,
-    amount: number | null;
-    baseCurrency: string;
-}
-
-type AllProps = PropsFromState & { countries: CountryMap };
+type AllProps = PropsFromRedux & { countries: CountryMap };
 
 const MessageHeading = styled.h1`
   margin: 0;
@@ -56,13 +51,8 @@ const getMessage = ({amount, baseCurrency, threshold, countries}: AllProps) => {
     return countMessage;
 }
 
-const MillionaireCount = ({
-    countries,
-    threshold,
-    amount,
-    baseCurrency
-}: AllProps) => {
-    const countMessage = getMessage({amount, baseCurrency, threshold, countries})
+const MillionaireCount = (props: AllProps) => {
+    const countMessage = getMessage(props)
     return (
         <Box
             pt={3}>
@@ -77,9 +67,12 @@ const MillionaireCount = ({
     )
 }
 
-const mapStateToProps = (state: any): PropsFromState => {
+const mapStateToProps = (state: RootState) => {
     const { threshold, amount, baseCurrency } = state;
     return { threshold, amount, baseCurrency };
 };
 
-export default connect(mapStateToProps)(MillionaireCount)
+const connector = connect(mapStateToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(MillionaireCount)

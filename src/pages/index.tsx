@@ -24,28 +24,30 @@ const FooterBar = styled.div`
 
 function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetails }) {
     const [tooltipContent, setTooltipContent] = useState("");
-    const [showMap, setShowMap] = useState(false)
+    const [isClient, setIsClient] = useState(false)
 
     useEffect(() => {
         initMoneyJS(rates); // required because money.js uses global state
-        setShowMap(true)
+        setIsClient(true)
     }, []);
-
-    if (!showMap) {
-        return <><p>loading...</p></>;
-    }
 
     return (
         <div>
             <HeaderBar>
                 <MillionaireCount countries={currencies}/>
-                <AmountInput />
+                {isClient && <AmountInput />}
             </HeaderBar>
-            <MapChart
-                setTooltipContent={setTooltipContent}
-                countries={currencies}
-            />
-            <ReactTooltip>{tooltipContent}</ReactTooltip>
+
+            {isClient && (
+                <>
+                    <MapChart
+                        setTooltipContent={setTooltipContent}
+                        countries={currencies}
+                    />
+                    <ReactTooltip>{tooltipContent}</ReactTooltip>
+                </>
+            )}
+
             <FooterBar>
                 <Links/>
                 <Legend/>

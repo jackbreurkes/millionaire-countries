@@ -1,36 +1,35 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { setAmount, setCurrency } from "../app/store";
+import {connect, ConnectedProps} from "react-redux";
+import { RootState, setAmount, setCurrency } from "../app/store";
 import fx from "money";
 import { Select, Input } from "@rebass/forms"
-import {Box, Button, Flex} from "rebass";
-import ReactDOM from "react-dom";
-
-interface PropsFromState {
-  amount: number;
-  baseCurrency: string;
-}
+import {Box, Flex} from "rebass";
 
 const fontSize = 2;
 
 const AmountInput = (
-  props: { setAmount?: any; setCurrency?: any } & PropsFromState
+    {
+        amount,
+        baseCurrency,
+        setAmount,
+        setCurrency
+    }: PropsFromRedux
 ) => {
   const [amountInputValue, setAmountInputValue] = useState(
-    props.amount ? props.amount.toString() : ""
+    amount ? amount.toString() : ""
   );
   const [currencyInputValue, setCurrencyInputValue] = useState(
-    props.baseCurrency
+    baseCurrency
   );
 
   const updateAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmountInputValue(e.target.value);
-    props.setAmount(e.target.value || null);
+    setAmount(parseFloat(e.target.value) || null);
   };
 
   const updateCurrency = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrencyInputValue(e.target.value);
-    props.setCurrency(e.target.value);
+    setCurrency(e.target.value);
   };
 
   return (
@@ -65,8 +64,8 @@ const AmountInput = (
                     value={amountInputValue}
                     onChange={updateAmount}
                     sx={{
-                        'background-color': 'white',
-                        'border-radius': '6px'
+                        backgroundColor: 'white',
+                        borderRadius: '6px'
                     }}
                 />
             </Box>
@@ -76,11 +75,12 @@ const AmountInput = (
   );
 };
 
-const mapStateToProps = (state: any): PropsFromState => {
+const mapStateToProps = (state: RootState) => {
   const { amount, baseCurrency } = state;
   return { amount, baseCurrency };
 };
 
-export default connect(mapStateToProps, { setAmount, setCurrency })(
-  AmountInput
-);
+const connector = connect(mapStateToProps, { setAmount, setCurrency });
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(AmountInput);

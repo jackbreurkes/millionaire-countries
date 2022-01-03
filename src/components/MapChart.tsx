@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from "react";
-import { connect } from "react-redux";
+import {connect, ConnectedProps} from "react-redux";
 import {
   ZoomableGroup,
   ComposableMap,
@@ -11,28 +11,18 @@ import {
 } from "../services/conversion.service";
 import TooltipContent from "./TooltipContent";
 import {getGeoStyle, IGeography, getHoverColour} from "../controllers/map-chart.controller";
-import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
+import {RootState} from "../app/store";
 
-// from https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json
+// geojson from https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json
 const geoUrl = "/world-110m.json"; // defines the shapes of each country
 const projection = "geoEqualEarth"; // defines the shape/warping of the map as a whole
 const graticuleColor = "#86C8F4";
 const fillColor = "#95D4FF";
 
-interface PropsFromState {
-  threshold: number;
-  amount: number | null;
-  baseCurrency: string;
-}
-
 interface MapPosition {
   coordinates: [number, number];
   zoom: number;
-}
-
-const getHeightFromWindow = () => {
-  return Math.min(Math.max(window.innerWidth * 0.8, 500), window.innerHeight * 0.6)
 }
 
 const getDefaultPosition = (width: number, height: number): MapPosition => ({
@@ -49,33 +39,18 @@ const MapChart = ({
 }: {
   setTooltipContent: (content: any) => void;
   countries: CountryMap;
-} & PropsFromState) => {
+} & PropsFromRedux) => {
   const width = window.innerWidth;
-  const [height, setHeight] = useState(getHeightFromWindow());
+  const height = window.innerHeight;
+  // const [height, setHeight] = useState(1000);
   const [position, setPosition] = useState<MapPosition>(getDefaultPosition(width, height));
   const [hasDragged, setHasDragged] = useState(false);
 
-  const [innerWidth, setInnerWidth] = useState<number | undefined>();
-
   useEffect(() => {
-    // Handler to call on window resize
-    function handleResize() {
-      setInnerWidth(window.innerWidth)
-    }
-
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-    // Call handler right away so state gets updated with initial window size
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    setHeight(window.innerHeight);
     if (!hasDragged) {
       setPosition(getDefaultPosition(width, height));
     }
-  }, [innerWidth]);
+  }, [window.innerWidth]);
 
   function handleMoveEnd(position: MapPosition) {
     setPosition(position);
@@ -161,9 +136,12 @@ const MapChart = ({
   );
 };
 
-const mapStateToProps = (state: any): PropsFromState => {
+const mapStateToProps = (state: RootState) => {
   const { threshold, amount, baseCurrency } = state;
   return { threshold, amount, baseCurrency };
 };
 
-export default connect(mapStateToProps)(memo(MapChart));
+const connector = connect(mapStateToProps)
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export default connector(memo(MapChart));
