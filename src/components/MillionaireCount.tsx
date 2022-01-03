@@ -9,7 +9,6 @@ type AllProps = PropsFromRedux & { countries: CountryMap };
 
 const MessageHeading = styled.h1`
   margin: 0;
-  text-align: center;
 `
 
 const HeadingHighlight = styled.span`
@@ -54,16 +53,13 @@ const getMessage = ({amount, baseCurrency, threshold, countries}: AllProps) => {
 const MillionaireCount = (props: AllProps) => {
     const countMessage = getMessage(props)
     return (
-        <Box
-            pt={3}>
-            <Flex>
-                <Box mx='auto'>
-                    <MessageHeading>
-                        <HeadingHighlight>{countMessage}</HeadingHighlight>
-                    </MessageHeading>
-                </Box>
-            </Flex>
-        </Box>
+        <Flex mt={3} justifyContent="center">
+            <Box>
+                <MessageHeading>
+                    <HeadingHighlight>{countMessage}</HeadingHighlight>
+                </MessageHeading>
+            </Box>
+        </Flex>
     )
 }
 

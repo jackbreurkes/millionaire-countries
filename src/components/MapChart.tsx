@@ -49,7 +49,6 @@ const MapChart = ({
 
   // the double useEffect is required to get the map to resize correctly
   useEffect(() => {
-    // Handler to call on window resize
     function handleResize() {
       setInnerWidth(window.innerWidth)
     }
@@ -61,7 +60,6 @@ const MapChart = ({
   }, []);
 
   useEffect(() => {
-    // setHeight(window.innerHeight);
     if (!hasDragged) {
       setPosition(getDefaultPosition(width, height));
     }
@@ -69,7 +67,6 @@ const MapChart = ({
 
   function handleMoveEnd(position: MapPosition) {
     setPosition(position);
-    console.log("moved")
     setHasDragged(true);
   }
 

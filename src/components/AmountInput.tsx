@@ -34,9 +34,7 @@ const AmountInput = (
   };
 
   return (
-    <Box pt={3}>
-        <Flex>
-            <Box mx='auto' />
+        <Flex mt={3} justifyContent="center">
             <Box width={75} mr={1}>
                 <Select
                     id='currency'
@@ -69,9 +67,7 @@ const AmountInput = (
                     }}
                 />
             </Box>
-            <Box mx='auto' />
         </Flex>
-    </Box>
   );
 };
 
