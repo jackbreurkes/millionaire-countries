@@ -27,7 +27,7 @@ const AmountInput = (
     setAmount(parseFloat(e.target.value) || null);
   };
 
-  const updateCurrency = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const updateCurrency = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrencyInputValue(e.target.value);
     setCurrency(e.target.value);
   };
@@ -42,7 +42,6 @@ const AmountInput = (
                     name='currency'
                     fontSize={fontSize}
                     value={currencyInputValue}
-                    // @ts-ignore
                     onChange={updateCurrency}
                     sx={{
                         backgroundColor: 'white',
