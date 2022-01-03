@@ -47,7 +47,7 @@ const MapChart = ({
 
   const [innerWidth, setInnerWidth] = useState<number | undefined>();
 
-
+  // the double useEffect is required to get the map to resize correctly
   useEffect(() => {
     // Handler to call on window resize
     function handleResize() {
