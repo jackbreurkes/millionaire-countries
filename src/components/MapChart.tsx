@@ -82,8 +82,6 @@ const MapChart = ({
     setHasDragged(true);
   }
 
-  // @ts-ignore
-  // @ts-ignore
   return (
     <>
       <ComposableMap
