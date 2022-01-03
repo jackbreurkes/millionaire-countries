@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import {connect, ConnectedProps} from "react-redux";
 import { RootState, setAmount, setCurrency } from "../app/store";
-import fx from "money";
 import { Select, Input } from "@rebass/forms"
 import {Box, Flex} from "rebass";
+import {RatesDetails} from "../services/conversion.service";
 
 const fontSize = 2;
 
@@ -12,8 +12,9 @@ const AmountInput = (
         amount,
         baseCurrency,
         setAmount,
-        setCurrency
-    }: PropsFromRedux
+        setCurrency,
+        rates
+    }: PropsFromRedux & { rates: RatesDetails["rates"] }
 ) => {
   const [amountInputValue, setAmountInputValue] = useState(
     amount ? amount.toString() : ""
@@ -48,7 +49,7 @@ const AmountInput = (
                         borderRadius: '6px',
                     }}
                 >
-                    {Object.keys(fx.rates).map((currency) => (
+                    {Object.keys(rates).map((currency) => (
                         <option key={currency}>{currency}</option>
                     ))}
                 </Select>

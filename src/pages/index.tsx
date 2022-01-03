@@ -9,6 +9,7 @@ import AmountInput from "../components/AmountInput";
 import MillionaireCount from "../components/MillionaireCount";
 import styled from "styled-components";
 import Links from "../components/Links";
+import {GetStaticProps} from "next";
 
 const HeaderBar = styled.div`
   position: fixed;
@@ -22,12 +23,12 @@ const FooterBar = styled.div`
   width: 100%;
 `
 
-function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetails }) {
+function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetails: RatesDetails }) {
     const [tooltipContent, setTooltipContent] = useState("");
     const [isClient, setIsClient] = useState(false)
 
     useEffect(() => {
-        initMoneyJS(rates); // required because money.js uses global state
+        initMoneyJS(ratesDetails); // required because money.js uses global state
         setIsClient(true)
     }, []);
 
@@ -35,7 +36,7 @@ function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetai
         <div>
             <HeaderBar>
                 <MillionaireCount countries={currencies}/>
-                {isClient && <AmountInput />}
+                <AmountInput rates={ratesDetails.rates} />
             </HeaderBar>
 
             {isClient && (
@@ -56,13 +57,13 @@ function Home({ currencies, rates }: { currencies: CountryMap, rates: RatesDetai
     );
 }
 
-export async function getStaticProps() {
-    const rates = await getExchangeRates();
-    const currencies = await getCountryMap(rates); // TODO use promise.all? does it matter for SSR?
+export const getStaticProps: GetStaticProps = async () => {
+    const ratesDetails = await getExchangeRates();
+    const currencies = await getCountryMap(ratesDetails); // TODO use promise.all? does it matter for SSR?
     return {
         props: {
             currencies,
-            rates,
+            ratesDetails,
         }
     }
 }
