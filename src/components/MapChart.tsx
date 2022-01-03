@@ -42,18 +42,34 @@ const MapChart = ({
 } & PropsFromRedux) => {
   const width = window.innerWidth;
   const height = window.innerHeight;
-  // const [height, setHeight] = useState(1000);
   const [position, setPosition] = useState<MapPosition>(getDefaultPosition(width, height));
   const [hasDragged, setHasDragged] = useState(false);
 
+  const [innerWidth, setInnerWidth] = useState<number | undefined>();
+
+
   useEffect(() => {
+    // Handler to call on window resize
+    function handleResize() {
+      setInnerWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', handleResize);
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    // setHeight(window.innerHeight);
     if (!hasDragged) {
       setPosition(getDefaultPosition(width, height));
     }
-  }, [window.innerWidth]);
+  }, [innerWidth]);
 
   function handleMoveEnd(position: MapPosition) {
     setPosition(position);
+    console.log("moved")
     setHasDragged(true);
   }
 
