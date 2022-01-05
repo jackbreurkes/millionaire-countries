@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MapChart from "../components/MapChart";
-import Legend from "../components/Legend";
+import LegendAndLinks from "../components/LegendAndLinks";
 import ReactTooltip from "react-tooltip";
 import {
     CountryMap, getCountries, getCountryMap, getExchangeRates, initMoneyJS, RatesDetails,
@@ -8,7 +8,6 @@ import {
 import AmountInput from "../components/AmountInput";
 import MillionaireCount from "../components/MillionaireCount";
 import styled from "styled-components";
-import Links from "../components/Links";
 import {GetStaticProps} from "next";
 
 const HeaderBar = styled.div`
@@ -50,8 +49,7 @@ function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetai
             )}
 
             <FooterBar>
-                <Links/>
-                <Legend/>
+                <LegendAndLinks/>
             </FooterBar>
         </div>
     );

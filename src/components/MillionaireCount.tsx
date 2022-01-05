@@ -8,6 +8,7 @@ import {RootState} from "../app/store";
 type AllProps = PropsFromRedux & { countries: CountryMap };
 
 const MessageHeading = styled.h1`
+  text-align: center;
   margin: 0;
 `
 
@@ -22,7 +23,7 @@ const HeadingHighlight = styled.span`
 
 const getMessage = ({amount, baseCurrency, threshold, countries}: AllProps) => {
     if (amount === null) {
-        return "Enter your net worth below";
+        return "Where am I a millionaire?";
     }
 
     let millionaireCountries = Object.entries(countries)
