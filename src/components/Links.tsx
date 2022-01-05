@@ -72,12 +72,10 @@ const Links = () => {
             <Box width={1 / 2} p={1}>
                 <Flex justifyContent="flex-start">
                     <Box>
-                        <Button m={1} sx={buttonStyle}>
+                        <Button m={1} sx={buttonStyle}
+                                onClick={() => window.open('https://github.com/jackbreurkes/millions', "_blank")}>
                             <Image src="/images/github-logo.svg" height={iconSize} width={iconSize}/>
-                            <Text pt={1}><Link sx={
-                                { color: "black", textDecoration: "none" }
-                            } href='https://rebassjs.org'>GitHub</Link></Text>
-
+                            <Text pt={1}>GitHub</Text>
                         </Button>
                     </Box>
                 </Flex>
