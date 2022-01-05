@@ -14,6 +14,7 @@ import {getGeoStyle, IGeography, getHoverColour} from "../controllers/map-chart.
 import ReactTooltip from "react-tooltip";
 import {RootState} from "../app/store";
 import ReactDOM from "react-dom";
+import { isMobile } from "react-device-detect";
 
 // geojson from https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json
 const geoUrl = "/world-110m.json"; // defines the shapes of each country
@@ -66,6 +67,12 @@ const MapChart = ({
     }
   }, [innerWidth]);
 
+  function handleMove() {
+    if (isMobile) {
+      setTooltipContent("")
+    }
+  }
+
   function handleMoveEnd(position: MapPosition) {
     setPosition(position);
     setHasDragged(true);
@@ -84,7 +91,7 @@ const MapChart = ({
           zoom={position.zoom}
           data-tip="" // required for tooltip to work
           minZoom={0.5}
-          // translateExtent={[[-0.5 * width, -0.5 * height], [1.5 * width, 1.5 * height]]}
+          onMove={handleMove}
           onMoveEnd={handleMoveEnd}
         >
           {/* @ts-ignore required properties */}
@@ -116,12 +123,12 @@ const MapChart = ({
                     onMouseEnter={() => {
                       const { NAME, ISO_A2 } = geo.properties;
                       setTooltipContent(
-                        <TooltipContent
-                          country={NAME}
-                          currencies={countries[ISO_A2].currencies}
-                          amount={amount}
-                          baseCurrency={baseCurrency}
-                        />
+                          <TooltipContent
+                              country={NAME}
+                              currencies={countries[ISO_A2].currencies}
+                              amount={amount}
+                              baseCurrency={baseCurrency}
+                          />
                       );
                       ReactTooltip.rebuild() // this might help to fix the pointer tracking bug?
                     }}
