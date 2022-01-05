@@ -10,10 +10,10 @@ const Legend = () => {
     return (
         <Flex justifyContent="center" flexWrap='wrap'>
             <Box width={[1, 1 / 2]} maxWidth={gradientWidth} px={2}>
-                <Image src="/images/RedGradientLegend.png" width={gradientWidth} height={gradientHeight}/>
+                <Image src="/images/RedGradientLegend.png" alt="red is less than 1,000,000" width={gradientWidth} height={gradientHeight}/>
             </Box>
             <Box width={[1, 1 / 2]} maxWidth={gradientWidth} px={2}>
-                <Image src="/images/GreenGradientLegend.png" width={gradientWidth} height={gradientHeight}/>
+                <Image src="/images/GreenGradientLegend.png" alt="green is more than 1,000,000" width={gradientWidth} height={gradientHeight}/>
             </Box>
         </Flex>
     );

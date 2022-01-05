@@ -62,7 +62,7 @@ const Links = () => {
                 <Flex justifyContent="flex-end">
                     <Box>
                         <Button m={1} onClick={downloadMapAsSVG} sx={buttonStyle}>
-                            <Image src="/images/mat-download-icon.svg" height={iconSize} width={iconSize}/>
+                            <Image src="/images/mat-download-icon.svg" alt="download icon" height={iconSize} width={iconSize}/>
                             <Text pt={1}>Save</Text>
                         </Button>
                     </Box>
@@ -74,7 +74,7 @@ const Links = () => {
                     <Box>
                         <Button m={1} sx={buttonStyle}
                                 onClick={() => window.open('https://github.com/jackbreurkes/millions', "_blank")}>
-                            <Image src="/images/github-logo.svg" height={iconSize} width={iconSize}/>
+                            <Image src="/images/github-logo.svg" alt="GitHub logo" height={iconSize} width={iconSize}/>
                             <Text pt={1}>GitHub</Text>
                         </Button>
                     </Box>
