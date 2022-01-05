@@ -76,7 +76,7 @@ const MapChart = ({
         width={width}
         height={height}
         projection={projection}
-        projectionConfig={{ scale: 147 }}
+        projectionConfig={{ scale: 147 }} // magic number from the example
       >
         <ZoomableGroup
           center={position.coordinates}

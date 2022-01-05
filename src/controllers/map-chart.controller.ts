@@ -88,8 +88,9 @@ export const getGeoStyle = (
         overThresholdB = overThresholdR
     }
 
+    // TODO could do this with the "color" library
     if (currencies === undefined || currencies.length === 0) {
-        console.warn(
+        console.info(
             `no exchange rates found for ${geo.properties.NAME_LONG}`
         ); // TODO move this somewhere else?
     } else {

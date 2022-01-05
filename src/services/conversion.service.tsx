@@ -1,10 +1,8 @@
 import fx from "money";
-import {demoFixerRes, demoRestCountriesRes} from "./demo-data";
+import {demoCountriesDate, demoRatesDate, demoRatesRes, demoRestCountriesRes} from "./demo-data";
+import axios from "axios";
 
 // https://en.wikipedia.org/wiki/ISO_4217#National_currencies
-
-const FIXER_API_KEY = "reset lol";
-const EUR_CURRENCY_CODE = "EUR";
 
 interface BaseCountry {
     name: { common: string };
@@ -46,19 +44,31 @@ export function convertAmount(
     });
 }
 
+export async function getCountries(): Promise<APICountry[]> {
+    const res = await axios.get(
+        `https://restcountries.com/v3.1/all?fields=name,cca2,cca3,currencies`
+    )
+        .catch(() => {
+            console.warn(`Could not access countries API, using response cached at ${demoCountriesDate}`);
+            return { data: demoRestCountriesRes }
+        });
+    return res.data;
+}
 
-// TODO split getting response from restructuring to avoid awaiting both at once
-// although... does it even matter if its all SSR'd?
-export async function getCountryMap(rates: RatesDetails) {
-    // const {data}: { data: APICountry[] } = await axios.get(
-    //     `https://restcountries.com/v3.1/all?fields=name,cca2,cca3,currencies`
-    // );
-    await new Promise(resolve => setTimeout(resolve, 500));  // TODO remove
-    // @ts-ignore
-    const data: APICountry[] = demoRestCountriesRes; // TODO remove, go back to API
+export async function getExchangeRates(): Promise<RatesDetails> {
+    const res = await axios.get(
+        `https://openexchangerates.org/api/latest.json?app_id=${process.env.RATES_KEY}`
+    )
+        .catch(() => {
+            console.warn(`Could not access exchange rates API, using response cached at ${demoRatesDate}`);
+            return {data: demoRatesRes};
+        });
+    return res.data;
+}
 
+export function getCountryMap(countries: APICountry[], rates: RatesDetails) {
     let countriesToCurrencies: CountryMap = {};
-    data.reduce((accumulator, country) => {
+    countries.reduce((accumulator, country) => {
         let apiCurrencies = country.currencies;
         let currencies: ICurrency[] = Object.keys(apiCurrencies).map(code => ({code, ...apiCurrencies[code]}));
         currencies = currencies.filter((currency) => rates.rates[currency.code] !== undefined);
@@ -69,17 +79,9 @@ export async function getCountryMap(rates: RatesDetails) {
     return countriesToCurrencies;
 }
 
-export async function getExchangeRates(): Promise<RatesDetails> {
-    // const res = await axios.get(
-    //     `http://data.fixer.io/api/latest?access_key=${FIXER_API_KEY}`
-    // ); // TODO maybe use openexchangerates.org since I get 1000 requests per month
-
-    await new Promise(resolve => setTimeout(resolve, 500)); // TODO remove
-    const rates = demoFixerRes; // TODO remove
-    initMoneyJS(rates);
-    return rates;
-}
-
+/**
+ * initialises the global state of money.js
+ */
 export function initMoneyJS(rates: RatesDetails) {
     fx.rates = rates.rates;
     fx.base = rates.base;

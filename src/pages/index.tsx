@@ -3,7 +3,7 @@ import MapChart from "../components/MapChart";
 import Legend from "../components/Legend";
 import ReactTooltip from "react-tooltip";
 import {
-    CountryMap, getCountryMap, getExchangeRates, initMoneyJS, RatesDetails,
+    CountryMap, getCountries, getCountryMap, getExchangeRates, initMoneyJS, RatesDetails,
 } from "../services/conversion.service";
 import AmountInput from "../components/AmountInput";
 import MillionaireCount from "../components/MillionaireCount";
@@ -58,13 +58,16 @@ function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetai
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-    const ratesDetails = await getExchangeRates();
-    const currencies = await getCountryMap(ratesDetails); // TODO use promise.all? does it matter for SSR?
+    const [countries, ratesDetails] = await Promise.all([getCountries(), getExchangeRates()]);
+    initMoneyJS(ratesDetails);
+    const currencies = getCountryMap(countries, ratesDetails);
+    console.info("Static props fetched")
     return {
         props: {
             currencies,
             ratesDetails,
-        }
+        },
+        revalidate: 3600, // revalidate every hour
     }
 }
 
