@@ -3,7 +3,7 @@ import {demoFixerRes, demoRestCountriesRes} from "./demo-data";
 
 // https://en.wikipedia.org/wiki/ISO_4217#National_currencies
 
-const FIXER_API_KEY = "7765dac57cf1c67f6802d3b351a928cc";
+const FIXER_API_KEY = "reset lol";
 const EUR_CURRENCY_CODE = "EUR";
 
 interface BaseCountry {
