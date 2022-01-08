@@ -9,6 +9,11 @@ import AmountInput from "../components/AmountInput";
 import MillionaireCount from "../components/MillionaireCount";
 import styled from "styled-components";
 import {GetStaticProps} from "next";
+import Head from "next/head";
+
+const SITE_TITLE = "Where am I a millionaire?";
+const SITE_DESCRIPTION = "See all the countries in which you have over one million of the local currency";
+const SITE_URL = process.env.VERCEL_URL;
 
 const HeaderBar = styled.div`
   position: fixed;
@@ -32,7 +37,41 @@ function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetai
     }, []);
 
     return (
-        <div>
+        <>
+            <Head>
+                <title>{SITE_TITLE}</title>
+
+                {/* from https://uxwing.com/planet-icon/ */}
+                <link rel="shortcut icon" href="/images/planet.svg" />
+
+                <meta
+                    name="description"
+                    content={SITE_DESCRIPTION}
+                />
+
+                <meta
+                    property="og:title"
+                    content={SITE_TITLE}
+                />
+                <meta
+                    property="og:url"
+                    content={SITE_URL}
+                />
+                <meta
+                    property="og:description"
+                    content={SITE_DESCRIPTION}
+                />
+                <meta
+                    property="og:image"
+                    content={`${SITE_URL}/images/share-image.png`}
+                />
+                <meta
+                    property="og:type"
+                    content="website"
+                />
+
+            </Head>
+
             <HeaderBar>
                 <MillionaireCount countries={currencies}/>
                 <AmountInput rates={ratesDetails.rates} />
@@ -51,7 +90,7 @@ function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetai
             <FooterBar>
                 <LegendAndLinks/>
             </FooterBar>
-        </div>
+        </>
     );
 }
 
