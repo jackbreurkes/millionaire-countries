@@ -42,17 +42,18 @@ const MapChart = ({
   setTooltipContent: (content: any) => void;
   countries: CountryMap;
 } & PropsFromRedux) => {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const [position, setPosition] = useState<MapPosition>(getDefaultPosition(width, height));
-  const [hasDragged, setHasDragged] = useState(false);
+  const [dimensions, setDimensions] = useState({
+    height: window.innerHeight,
+    width: window.innerWidth
+  })
+  const [position, setPosition] = useState<MapPosition>(getDefaultPosition(dimensions.width, dimensions.height));
 
-  const [innerWidth, setInnerWidth] = useState<number | undefined>();
-
-  // the double useEffect is required to get the map to resize correctly
   useEffect(() => {
     function handleResize() {
-      setInnerWidth(window.innerWidth)
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth
+      })
     }
 
     window.addEventListener('resize', handleResize);
@@ -60,12 +61,6 @@ const MapChart = ({
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    if (!hasDragged) {
-      setPosition(getDefaultPosition(width, height));
-    }
-  }, [innerWidth]);
 
   function handleMove() {
     if (isMobile) {
@@ -75,14 +70,13 @@ const MapChart = ({
 
   function handleMoveEnd(position: MapPosition) {
     setPosition(position);
-    setHasDragged(true);
   }
 
   return (
     <>
       <ComposableMap
-        width={width}
-        height={height}
+        width={dimensions.width}
+        height={dimensions.height}
         projection={projection}
         projectionConfig={{ scale: 147 }} // magic number from the example
       >
@@ -94,7 +88,7 @@ const MapChart = ({
           onMove={handleMove}
           onMoveEnd={handleMoveEnd}
         >
-          {/* @ts-ignore required properties */}
+          {/* @ts-ignore missing required properties error */}
           <Sphere stroke={graticuleColor} strokeWidth={1.2} fill={fillColor} />
           <Graticule stroke={graticuleColor} strokeWidth={0.6} step={[10, 10]} />
           <Geographies
