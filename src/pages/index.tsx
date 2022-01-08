@@ -63,7 +63,7 @@ function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetai
                 />
                 <meta
                     property="og:image"
-                    content={`${SITE_URL}/images/share-image.png`}
+                    content={`https://${SITE_URL}/images/share-image.png`}
                 />
                 <meta
                     property="og:type"
