@@ -13,7 +13,7 @@ import Head from "next/head";
 
 const SITE_TITLE = "Where am I a millionaire?";
 const SITE_DESCRIPTION = "See all the countries in which you have over one million of the local currency";
-const SITE_URL = process.env.VERCEL_URL;
+const SITE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 
 const HeaderBar = styled.div`
   position: fixed;
