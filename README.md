@@ -17,6 +17,7 @@ No guarantees are made that any information used in this app is accurate. It is 
 - [color](https://www.npmjs.com/package/color) (for color conversions and calculations)
 - [Rebass](https://rebassjs.org/) (for styling)
 - [styled-components](https://styled-components.com/) (for styling)
+- [firebase](https://firebase.google.com/)
 - Country data from [REST Countries](https://restcountries.com/)
 - Exchange rate data from [Open Exchange Rates](https://openexchangerates.org/)
 - Deployed on [Vercel](https://vercel.com/)
