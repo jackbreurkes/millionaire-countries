@@ -32,6 +32,10 @@ function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetai
     const [isClient, setIsClient] = useState(false)
 
     useEffect(() => {
+        fetch(`/api/views?slug=index`, {
+            method: "POST"
+        }); // log page view
+
         initMoneyJS(ratesDetails); // required because money.js uses global state
         setIsClient(true)
     }, []);
