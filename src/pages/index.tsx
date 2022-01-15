@@ -82,7 +82,7 @@ function Home(
 
             <HeaderBar>
                 <MillionaireCount countries={currencies}/>
-                <AmountInput rates={ratesDetails.rates} />
+                <AmountInput countries={currencies} rates={ratesDetails.rates} />
             </HeaderBar>
 
             {isClient && (
