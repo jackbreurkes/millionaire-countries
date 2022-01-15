@@ -18,6 +18,6 @@ No guarantees are made that any information used in this app is accurate. It is 
 - [Rebass](https://rebassjs.org/) (for styling)
 - [styled-components](https://styled-components.com/) (for styling)
 - [firebase](https://firebase.google.com/)
-- Country data from [REST Countries](https://restcountries.com/)
+- Country data from [REST Countries](https://restcountries.com/) (`https://restcountries.com/v3.1/all?fields=name,cca2,cca3,currencies`)
 - Exchange rate data from [Open Exchange Rates](https://openexchangerates.org/)
 - Deployed on [Vercel](https://vercel.com/)

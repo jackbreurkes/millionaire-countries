@@ -1,6 +1,7 @@
 import fx from "money";
-import {demoCountriesDate, demoRatesDate, demoRatesRes, demoRestCountriesRes} from "./demo-data";
+import {demoRatesDate, demoRatesRes} from "./demo-rates";
 import axios from "axios";
+import countries from '../lib/countries.json';
 
 // https://en.wikipedia.org/wiki/ISO_4217#National_currencies
 
@@ -44,15 +45,8 @@ export function convertAmount(
     });
 }
 
-export async function getCountries(): Promise<APICountry[]> {
-    const res = await axios.get(
-        `https://restcountries.com/v3.1/all?fields=name,cca2,cca3,currencies`
-    )
-        .catch(() => {
-            console.warn(`Could not access countries API, using response cached at ${demoCountriesDate}`);
-            return { data: demoRestCountriesRes }
-        });
-    return res.data;
+export function getCountries(): APICountry[] {
+    return (countries as unknown as APICountry[]); // not sure why countries cannot be cast to APICountry[]
 }
 
 export async function getExchangeRates(): Promise<RatesDetails> {

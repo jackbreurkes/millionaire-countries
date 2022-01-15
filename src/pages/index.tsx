@@ -27,7 +27,11 @@ const FooterBar = styled.div`
   width: 100%;
 `
 
-function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetails: RatesDetails }) {
+function Home(
+    {
+        currencies, ratesDetails
+    }: { currencies: CountryMap, ratesDetails: RatesDetails }
+) {
     const [tooltipContent, setTooltipContent] = useState("");
     const [isClient, setIsClient] = useState(false)
 
@@ -99,9 +103,9 @@ function Home({ currencies, ratesDetails }: { currencies: CountryMap, ratesDetai
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-    const [countries, ratesDetails] = await Promise.all([getCountries(), getExchangeRates()]);
+    const ratesDetails = await getExchangeRates();
     initMoneyJS(ratesDetails);
-    const currencies = getCountryMap(countries, ratesDetails);
+    const currencies = getCountryMap(getCountries(), ratesDetails);
     console.info("Static props fetched")
     return {
         props: {
