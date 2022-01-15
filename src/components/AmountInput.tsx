@@ -104,6 +104,7 @@ const setQueryStringWithoutPageReload = (qsValue: string) => {
     window.history.pushState({path: newurl}, "", newurl);
 };
 
+// TODO kill the query param stuff once geolocation is working
 /**
  * this only allows one query to be in the url at a time. not an issue for current use case
  */
