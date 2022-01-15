@@ -1,24 +1,24 @@
 import { NextResponse, NextRequest } from 'next/server'
-import countries from '../lib/countries.json'
 
-const CURRENCY_CODE_PARAM = 'currency' // same as in AmountInput.tsx
+const COUNTRY_CODE_PARAM = 'userCountry'
 
 // TODO get middleware working (leave for a different commit maybe?)
 export async function middleware(req: NextRequest) {
     const { nextUrl: url, geo } = req
-    if (url.pathname !== '/' || url.searchParams.has(CURRENCY_CODE_PARAM)) {
+    if (url.pathname !== '/') {
         return NextResponse.next()
     }
 
-    const countryCodeA2 = geo?.country || 'US'
-    const countryInfo = countries.find((x) => x.cca2 === countryCodeA2)
-
-    if (countryInfo === undefined) {
+    const countryCodeA2 = geo?.country
+    if (countryCodeA2 === undefined) {
         return NextResponse.next()
     }
 
-    const currencyCode = Object.keys(countryInfo.currencies)[0]
-    url.searchParams.set(CURRENCY_CODE_PARAM, "NZD") // TODO un-hardcode
-    console.log(url.href)
-    return NextResponse.rewrite(url.href)
+    // without this we get an infinite redirect loop
+    if (url.searchParams.get(COUNTRY_CODE_PARAM) === countryCodeA2) {
+        return NextResponse.next()
+    }
+
+    url.searchParams.set(COUNTRY_CODE_PARAM, countryCodeA2)
+    return NextResponse.redirect(url)
 }

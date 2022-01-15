@@ -10,7 +10,6 @@ import MillionaireCount from "../components/MillionaireCount";
 import styled from "styled-components";
 import {GetStaticProps} from "next";
 import Head from "next/head";
-import {useRouter} from "next/router";
 
 const SITE_TITLE = "Where am I a millionaire?";
 const SITE_DESCRIPTION = "See all the countries in which you have over one million of the local currency";
@@ -35,12 +34,6 @@ function Home(
 ) {
     const [tooltipContent, setTooltipContent] = useState("");
     const [isClient, setIsClient] = useState(false)
-    const router = useRouter();
-    console.log(router)
-
-    useEffect(() => {
-        console.log("new R", router)
-    }, []);
 
     useEffect(() => {
         fetch(`/api/views`, {
@@ -89,7 +82,7 @@ function Home(
 
             <HeaderBar>
                 <MillionaireCount countries={currencies}/>
-                <AmountInput rates={ratesDetails.rates} />
+                <AmountInput countries={currencies} rates={ratesDetails.rates} />
             </HeaderBar>
 
             {isClient && (

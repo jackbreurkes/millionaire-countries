@@ -3,9 +3,9 @@ import {connect, ConnectedProps, useSelector} from "react-redux";
 import {RootState, setAmount, setCurrency} from "../app/store";
 import {Select, Input} from "@rebass/forms"
 import {Box, Flex} from "rebass";
-import {RatesDetails} from "../services/conversion.service";
-import qs from "qs";
+import {CountryMap, RatesDetails} from "../services/conversion.service";
 
+const COUNTRY_CODE_PARAM = 'userCountry'; // must match the constant declared in _middleware.ts
 const CURRENCY_URL_PARAM = "currency";
 
 const fontSize = 2;
@@ -15,27 +15,36 @@ const AmountInput = (
         amount,
         setAmount,
         setCurrency,
+        countries,
         rates
-    }: PropsFromRedux & { rates: RatesDetails["rates"] }
+    }: PropsFromRedux & { countries: CountryMap, rates: RatesDetails["rates"] }
 ) => {
     const [amountInputValue, setAmountInputValue] = useState(
         amount ? amount.toString() : ""
     );
+    const baseCurrency: string = useSelector((state: RootState) => state.baseCurrency);
 
     useEffect(() => {
+        let newCurrency: string | undefined;
+
         // update the currency on client-side to avoid generating a static page for each possible currency
         const params = new URLSearchParams(window.location.search);
-        const currencyCode = params.get(CURRENCY_URL_PARAM);
-        if (currencyCode) {
-            setCurrency(currencyCode);
+        const currencyParam = params.get(CURRENCY_URL_PARAM);
+        const countryParam = params.get(COUNTRY_CODE_PARAM);
+        if (currencyParam) {
+            newCurrency = currencyParam
+        } else if (countryParam) {
+            // try to infer from the detected country
+            const currencyFromCountry = countries[countryParam]?.currencies[0]?.code;
+            if (currencyFromCountry) {
+                newCurrency = currencyFromCountry
+            }
+        }
+
+        if (newCurrency && (newCurrency in rates)) {
+            setCurrency(newCurrency);
         }
     }, [])
-
-    let baseCurrency: string = useSelector((state: RootState) => state.baseCurrency);
-    if (!(baseCurrency in rates)) {
-        baseCurrency = "USD";
-        setCurrency(baseCurrency);
-    }
 
     const updateAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAmountInputValue(e.target.value);
@@ -44,7 +53,6 @@ const AmountInput = (
 
     const updateCurrency = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCurrency(e.target.value);
-        setQueryStringValue(CURRENCY_URL_PARAM, e.target.value);
     };
 
     return (
@@ -94,25 +102,3 @@ const connector = connect(mapStateToProps, {setAmount, setCurrency});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 export default connector(AmountInput);
-
-const setQueryStringWithoutPageReload = (qsValue: string) => {
-    const newurl = window.location.protocol + "//" +
-        window.location.host +
-        window.location.pathname +
-        qsValue;
-
-    window.history.pushState({path: newurl}, "", newurl);
-};
-
-// TODO kill the query param stuff once geolocation is working
-/**
- * this only allows one query to be in the url at a time. not an issue for current use case
- */
-const setQueryStringValue = (
-    key: string,
-    value: string,
-) => {
-    const newQsValue = qs.stringify({[key]: value}, {addQueryPrefix: true});
-    console.log(newQsValue)
-    setQueryStringWithoutPageReload(newQsValue);
-};
