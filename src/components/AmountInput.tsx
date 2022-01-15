@@ -5,7 +5,7 @@ import {Select, Input} from "@rebass/forms"
 import {Box, Flex} from "rebass";
 import {CountryMap, RatesDetails} from "../services/conversion.service";
 
-const COUNTRY_CODE_PARAM = 'userCountry'; // must match the constant declared in _middleware.ts
+const COUNTRY_CODE_PARAM = 'ephemeral'; // must match the constant declared in _middleware.ts
 const CURRENCY_URL_PARAM = "currency";
 
 const fontSize = 2;

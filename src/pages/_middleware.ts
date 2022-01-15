@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 
-const COUNTRY_CODE_PARAM = 'userCountry'
+const COUNTRY_CODE_PARAM = 'ephemeral' // ephemeral country (named as such to avoid confusing users)
 
 // TODO get middleware working (leave for a different commit maybe?)
 export async function middleware(req: NextRequest) {
