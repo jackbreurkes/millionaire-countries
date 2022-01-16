@@ -12,6 +12,7 @@ No guarantees are made that any information used in this app is accurate. It is 
 - TypeScript
 - yarn
 - [Next.js](https://nextjs.org/) (for server side rendering)
+- [Redux](https://redux.js.org/) (for state management)
 - [react-simple-maps](https://www.react-simple-maps.io/) (for the map)
 - [money](https://www.npmjs.com/package/money) (for simple currency conversions)
 - [color](https://www.npmjs.com/package/color) (for color conversions and calculations)
@@ -24,7 +25,7 @@ No guarantees are made that any information used in this app is accurate. It is 
 
 ## Some lessons I learned
 
-Redux has great [TS bindings](https://redux.js.org/usage/usage-with-typescript), particularly the [`ConnectedProps`](https://redux.js.org/usage/usage-with-typescript) type which allows you to type your component props without creating a separate `PropsFromState` for each one.
+**Redux has great [TS bindings](https://redux.js.org/usage/usage-with-typescript)**, particularly the [`ConnectedProps`](https://redux.js.org/usage/usage-with-typescript) type which allows you to type your component props without creating a separate `PropsFromState` interface for each component.
 
 **GDPR is hard to get right for hobby projects**; I had to make sure that hosting platforms and APIs would not collect user data. I ended up writing my own basic view count code because other analytics frameworks would have required users to accept a privacy policy.
 
